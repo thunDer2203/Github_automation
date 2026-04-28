@@ -112,8 +112,8 @@
                 <button class="btn-back" onclick="app.goToScreen('screen-welcome')">← Back</button>
                 <h3 id="t-ageQuestion">Are you 18 years or older?</h3>
                 <div class="btn-group">
-                    <button class="btn-secondary giant-btn" onclick="app.answerAge(true)" id="t-yes">Yes</button>
-                    <button class="btn-secondary giant-btn" onclick="app.answerAge(false)" id="t-no">No</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerAge(true)" id="t-yes-age">Yes</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerAge(false)" id="t-no-age">No</button>
                 </div>
             </div>
 
@@ -121,8 +121,8 @@
                 <button class="btn-back" onclick="app.goBack_eligibilityQ2()">← Back</button>
                 <h3 id="t-seniorQuestion">Are you 85 years or older, or a Person with Disability (PwD)?</h3>
                 <div class="btn-group">
-                    <button class="btn-secondary giant-btn" onclick="app.answerSenior(true)" id="t-yes">Yes</button>
-                    <button class="btn-secondary giant-btn" onclick="app.answerSenior(false)" id="t-no">No</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerSenior(true)" id="t-yes-senior">Yes</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerSenior(false)" id="t-no-senior">No</button>
                 </div>
             </div>
 
@@ -142,12 +142,12 @@
                     <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-homeVotingLink">🔗 Download Form 12D Here</a>
                 </div>
 
-                <button class="btn-primary" onclick="app.goToScreen('screen-voter-slip')" id="t-nextStep">Next Step ➔</button>
+                <button class="btn-primary" onclick="app.goToScreen('screen-voter-slip')" id="t-nextStep-homeVoting">Next Step ➔</button>
             </div>
 
             <div id="not-eligible-info" class="info-card hidden alert-box-warning">
                 <p id="t-notEligible">You must be 18 to vote. Keep learning for the future!</p>
-                <button class="btn-secondary" onclick="app.goToScreen('screen-welcome')" id="t-restart">Restart Journey</button>
+                <button class="btn-secondary" onclick="app.goToScreen('screen-welcome')" id="t-restart-notEligible">Restart Journey</button>
             </div>
         </section>
 
@@ -180,7 +180,7 @@
                     </iframe>
                     <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 4px;">🔍 Find My Constituency on ECI Portal</button>
                 </div>
-                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-epic">Next Step ➔</button>
             </div>
 
             <div id="roll-q2" class="question-card hidden">
@@ -217,7 +217,7 @@
                 <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
                     <a href="https://electoralsearch.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-searchBtn">🔗 Open ECI Official Search</a>
                 </div>
-                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-roll">Next Step ➔</button>
             </div>
 
             <div id="shift-q3" class="question-card hidden">
@@ -237,7 +237,7 @@
                     <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-formLinkOnline">💻 Apply Online (Requires Login)</a>
                     <a href="https://eci.gov.in/forms/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; padding: 0.8rem;" id="t-formLinkPdf">📄 Download Form 8 PDF (To give to BLO)</a>
                 </div>
-                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-form8">Next Step ➔</button>
             </div>
 
             <div id="form6-info" class="info-card hidden alert-box-warning">
@@ -262,7 +262,7 @@
                     <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-formLinkOnline">💻 Apply Online (Requires Login)</a>
                     <a href="https://eci.gov.in/forms/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; padding: 0.8rem;" id="t-formLinkPdf">📄 Download Form 6 PDF (To give to BLO)</a>
                 </div>
-                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-form6">Next Step ➔</button>
             </div>
 
             <div id="voter-slip-info" class="info-card hidden alert-box">
@@ -274,7 +274,7 @@
                     <p style="font-size: 0.95rem; color: #333;">To remove duplicate voters and ensure a clean electoral roll, the ECI encourages linking your Aadhaar with your Voter ID using <strong>Form 6B</strong>. You can do this easily via the Voter Helpline App!</p>
                 </div>
 
-                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-voterSlip">Next Step ➔</button>
             </div>
         </section>
 
@@ -307,7 +307,7 @@
                 <div id="vvpat-slip" class="vvpat-slip"></div>
             </div>
 
-            <button class="btn-primary mt-4" onclick="app.goToScreen('screen-smart-bites')" id="t-nextStep">Next Step ➔</button>
+            <button class="btn-primary mt-4" onclick="app.goToScreen('screen-smart-bites')" id="t-nextStep-evm">Next Step ➔</button>
         </section>
 
         <!-- Screen 4: Education Hub -->
@@ -386,7 +386,7 @@
                 <h3 style="color: #28a745;">Congratulations!</h3>
                 <p>You scored <span id="quiz-score">0</span>/3. You have earned the <strong>Smart Voter Badge!</strong></p>
                 <div class="badge-icon" style="font-size: 4rem; margin: 20px 0; animation: pulse 2s infinite;">🏅</div>
-                <button class="btn-secondary giant-btn mt-4" onclick="app.goToScreen('screen-welcome')" id="t-restart">Restart Journey</button>
+                <button class="btn-secondary giant-btn mt-4" onclick="app.goToScreen('screen-welcome')" id="t-restart-quiz">Restart Journey</button>
             </div>
         </section>
 
