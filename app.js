@@ -42,7 +42,9 @@ const app = {
         const selectBox = document.querySelector(".goog-te-combo");
         if (selectBox) {
             selectBox.value = langCode;
-            selectBox.dispatchEvent(new Event("change"));
+            selectBox.dispatchEvent(new Event("change", { bubbles: true, cancelable: true }));
+        } else {
+            console.error("Google Translate is still loading. Please try again in a second.");
         }
     },
 
