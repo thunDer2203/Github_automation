@@ -91,7 +91,53 @@ const app = {
         }
     },
 
-    // Step 1: Eligibility
+    // ---- Back Navigation Handlers ----
+    goBack_eligibilityQ2() {
+        document.getElementById('eligibility-q2').classList.add('hidden');
+        document.getElementById('eligibility-q1').classList.remove('hidden');
+    },
+
+    goBack_homeVoting() {
+        document.getElementById('home-voting-info').classList.add('hidden');
+        document.getElementById('eligibility-q2').classList.remove('hidden');
+    },
+
+    goBack_epicInfo() {
+        document.getElementById('epic-info').classList.add('hidden');
+        document.getElementById('voter-q1').classList.remove('hidden');
+    },
+
+    goBack_rollQ2() {
+        document.getElementById('roll-q2').classList.add('hidden');
+        document.getElementById('voter-q1').classList.remove('hidden');
+    },
+
+    goBack_rollInfo() {
+        document.getElementById('roll-info').classList.add('hidden');
+        document.getElementById('roll-q2').classList.remove('hidden');
+    },
+
+    goBack_shiftQ3() {
+        document.getElementById('shift-q3').classList.add('hidden');
+        document.getElementById('roll-q2').classList.remove('hidden');
+    },
+
+    goBack_form8() {
+        document.getElementById('form8-info').classList.add('hidden');
+        document.getElementById('shift-q3').classList.remove('hidden');
+    },
+
+    goBack_form6() {
+        document.getElementById('form6-info').classList.add('hidden');
+        document.getElementById('shift-q3').classList.remove('hidden');
+    },
+
+    goBack_voterSlip() {
+        document.getElementById('voter-slip-info').classList.add('hidden');
+        document.getElementById('roll-q2').classList.remove('hidden');
+    },
+
+    // ---- Step Handlers ----
     answerAge(isAdult) {
         document.getElementById('eligibility-q1').classList.add('hidden');
         if (isAdult) {

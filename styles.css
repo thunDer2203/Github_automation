@@ -110,6 +110,25 @@ h1, h2, h3, h4, .step-title {
 
 h3 { font-size: 1.6rem; font-weight: 700; }
 
+/* Back Navigation Button */
+.btn-back {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    opacity: 0.75;
+    transition: opacity 0.2s;
+}
+.btn-back:hover { opacity: 1; text-decoration: underline; }
+
 .btn-group {
     display: flex;
     gap: 1rem;

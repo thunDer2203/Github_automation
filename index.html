@@ -62,6 +62,7 @@
         <!-- Screen Timeline -->
         <section id="screen-timeline" class="screen">
             <h2 class="step-title">The Election Timeline</h2>
+            <button class="btn-back" onclick="app.goToScreen('screen-welcome')">← Back</button>
             <div class="info-card" style="background: white;">
                 <img src="isometric_timeline.png" alt="Isometric infographic of the Election Timeline" style="max-width: 100%; border-radius: 12px; margin-bottom: 15px; border: 1px solid #eee;">
                 <p><strong>1. Registration Cutoff:</strong> You must apply before nominations begin.</p>
@@ -77,6 +78,7 @@
             <h2 id="t-step1Title" class="step-title">Step 1: Check Eligibility</h2>
             
             <div id="eligibility-q1" class="question-card">
+                <button class="btn-back" onclick="app.goToScreen('screen-welcome')">← Back</button>
                 <h3 id="t-ageQuestion">Are you 18 years or older?</h3>
                 <div class="btn-group">
                     <button class="btn-secondary giant-btn" onclick="app.answerAge(true)" id="t-yes">Yes</button>
@@ -85,6 +87,7 @@
             </div>
 
             <div id="eligibility-q2" class="question-card hidden">
+                <button class="btn-back" onclick="app.goBack_eligibilityQ2()">← Back</button>
                 <h3 id="t-seniorQuestion">Are you 85 years or older, or a Person with Disability (PwD)?</h3>
                 <div class="btn-group">
                     <button class="btn-secondary giant-btn" onclick="app.answerSenior(true)" id="t-yes">Yes</button>
@@ -93,6 +96,7 @@
             </div>
 
             <div id="home-voting-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_homeVoting()">← Back</button>
                 <h3 id="t-homeVotingTitle">🏡 Home Voting Available!</h3>
                 <p id="t-homeVotingDesc">Great news! Since you are a senior citizen or PwD, the Election Commission allows you to vote from the comfort of your home using Form 12D. Election officials will visit your house.</p>
                 
@@ -121,6 +125,7 @@
             <h2 id="t-step2Title" class="step-title">Step 2: Voter ID & Electoral Roll</h2>
             
             <div id="voter-q1" class="question-card">
+                <button class="btn-back" onclick="app.goToScreen('screen-eligibility')">← Back</button>
                 <h3 id="t-epicQuestion">Do you have a Voter ID Card (EPIC)?</h3>
                 <div class="btn-group">
                     <button class="btn-secondary giant-btn" onclick="app.answerEpic(true)" id="t-yesEpic">Yes, I have it</button>
@@ -129,6 +134,7 @@
             </div>
 
             <div id="epic-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_epicInfo()">← Back</button>
                 <p id="t-epicInfo">Don't worry! You can apply for a new Voter ID by filling out Form 6 online at voters.eci.gov.in or by visiting your local BLO.</p>
                 <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
                     <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
@@ -139,6 +145,7 @@
             </div>
 
             <div id="roll-q2" class="question-card hidden">
+                <button class="btn-back" onclick="app.goBack_rollQ2()">← Back</button>
                 <h3 id="t-rollQuestion">Is your name on the Electoral Roll (Voter List)?</h3>
                 <div class="btn-group" style="flex-direction: column;">
                     <button class="btn-secondary giant-btn" onclick="app.answerRoll('yes')" id="t-yesRoll">Yes, it is</button>
@@ -148,6 +155,7 @@
             </div>
 
             <div id="roll-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_rollInfo()">← Back</button>
                 <h3 id="t-searchRollTitle">🔍 Find Your Name (Smart Search)</h3>
                 <p id="t-searchRollDesc">The official ECI portal is highly secure. To check your name without errors, click the button below. It will open the official portal.</p>
                 <div class="process-box" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ccc;">
@@ -167,6 +175,7 @@
             </div>
 
             <div id="shift-q3" class="question-card hidden">
+                <button class="btn-back" onclick="app.goBack_shiftQ3()">← Back</button>
                 <h3 id="t-shiftQuestion">Did you recently shift your house to a new city or state?</h3>
                 <div class="btn-group">
                     <button class="btn-secondary giant-btn" onclick="app.answerShift('yes')" id="t-yesShift">Yes, I shifted</button>
@@ -175,6 +184,7 @@
             </div>
 
             <div id="form8-info" class="info-card hidden alert-box-warning">
+                <button class="btn-back" onclick="app.goBack_form8()">← Back</button>
                 <h3 id="t-form8Title">⚠️ You need Form 8!</h3>
                 <p id="t-form8Desc">When you move houses, your Voter ID does NOT update automatically. You must fill out <strong>Form 8</strong> for 'Shifting of Residence'.<br><br><strong>Did you know?</strong> Form 8 is a multi-purpose form! It is also the official form used for <strong>Corrections</strong> (fixing a misspelled name or wrong age) and requesting a <strong>Replacement Voter ID</strong> if yours is lost.</p>
                 <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
@@ -185,6 +195,7 @@
             </div>
 
             <div id="form6-info" class="info-card hidden alert-box-warning">
+                <button class="btn-back" onclick="app.goBack_form6()">← Back</button>
                 <h3 id="t-form6Title">⚠️ You need Form 6!</h3>
                 <p id="t-form6Desc">If you haven't moved but your name is missing, it might have been deleted by mistake or you never registered. You need to apply as a new voter using <strong>Form 6</strong>.<br><br><em>🌍 Are you an NRI (Overseas Citizen)?</em> You must use <strong>Form 6A</strong> instead to register.</p>
                 
@@ -202,6 +213,7 @@
             </div>
 
             <div id="voter-slip-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_voterSlip()">← Back</button>
                 <p id="t-voterSlipInfo">Awesome! Now you just need your Voter Slip. You can download the Voter Helpline App or ask your local BLO to get it before election day.</p>
                 
                 <div class="helper-block" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 2px solid #28a745;">
@@ -216,6 +228,7 @@
         <!-- Screen 3: Mock EVM -->
         <section id="screen-evm" class="screen">
             <h2 id="t-step3Title" class="step-title">Step 3: Inside the Polling Booth</h2>
+            <button class="btn-back" onclick="app.goToScreen('screen-voter-slip')">← Back</button>
             <p id="t-mockEvmDesc" class="instruction-text">Let's practice! This is what the EVM (Electronic Voting Machine) looks like. Press the blue button next to your chosen candidate.</p>
             
             <div class="evm-machine">
