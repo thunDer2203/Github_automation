@@ -90,6 +90,10 @@ const app = {
      * Respects the currently selected language code.
      */
     readAloud() {
+        if (!('speechSynthesis' in window)) {
+            alert("Sorry, your browser doesn't support text-to-speech.");
+            return;
+        }
         window.speechSynthesis.cancel();
         const activeScreen = document.querySelector('.screen.active');
         if (!activeScreen) return;
@@ -305,7 +309,13 @@ const app = {
             this.logEvent('chat_opened');
             // Init BYOK Gemini on first open
             if (!this.isGeminiActive && !this.waitingForKey) {
-                const savedKey = localStorage.getItem('gemini_api_key');
+                let savedKey = null;
+                try {
+                    savedKey = localStorage.getItem('gemini_api_key');
+                } catch(e) {
+                    // Ignore localStorage blocked errors
+                }
+
                 if (savedKey) {
                     this.initGemini(savedKey);
                 } else {
@@ -335,13 +345,17 @@ const app = {
             await this.geminiChat.sendMessage("Hello"); // key validation handshake
             this.isGeminiActive = true;
             this.waitingForKey = false;
-            localStorage.setItem('gemini_api_key', apiKey);
+            try {
+                localStorage.setItem('gemini_api_key', apiKey);
+            } catch(e) {}
             this.logEvent('gemini_activated');
             this.addChatBubble("✅ Gemini Activated! What would you like to ask about the elections?", 'bot');
         } catch (e) {
             console.error(e);
             this.addChatBubble("❌ Invalid API Key or network error. Please paste a valid key or type 'skip'.", 'bot');
-            localStorage.removeItem('gemini_api_key');
+            try {
+                localStorage.removeItem('gemini_api_key');
+            } catch(e) {}
             this.waitingForKey = true;
         }
     },
