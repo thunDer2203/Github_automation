@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vote-edu-v2';
+const CACHE_NAME = 'vote-edu-v5';
 const urlsToCache = [
   './',
   './index.html',
