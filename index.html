@@ -140,7 +140,16 @@
             </div>
 
             <div id="roll-info" class="info-card hidden alert-box">
-                <p id="t-rollInfo">You can check if your name is on the list easily by visiting voters.eci.gov.in, calling the helpline 1950, or asking your local BLO.</p>
+                <h3 id="t-searchRollTitle">🔍 Find Your Name (Smart Search)</h3>
+                <p id="t-searchRollDesc">The official ECI portal is highly secure. To check your name without errors, click the button below. It will open the official portal.</p>
+                <div class="process-box" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ccc;">
+                    <strong>Before you click, keep this ready:</strong><br>
+                    1. Your <strong>EPIC Number</strong> (found on your Voter ID card).<br>
+                    2. Or your exact Personal Details (Name, Age, State, District).
+                </div>
+                <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
+                    <a href="https://electoralsearch.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-searchBtn">🔗 Open ECI Official Search</a>
+                </div>
                 <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
             </div>
 
@@ -180,6 +189,12 @@
 
             <div id="voter-slip-info" class="info-card hidden alert-box">
                 <p id="t-voterSlipInfo">Awesome! Now you just need your Voter Slip. You can download the Voter Helpline App or ask your local BLO to get it before election day.</p>
+                
+                <div class="helper-block" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 2px solid #28a745;">
+                    <h4 style="color: #28a745; margin-top: 0;">✅ Have you linked your Aadhaar? (Form 6B)</h4>
+                    <p style="font-size: 0.95rem; color: #333;">To remove duplicate voters and ensure a clean electoral roll, the ECI encourages linking your Aadhaar with your Voter ID using <strong>Form 6B</strong>. You can do this easily via the Voter Helpline App!</p>
+                </div>
+
                 <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
             </div>
         </section>
@@ -271,7 +286,28 @@
                 </div>
             </div>
 
-            <button class="btn-secondary giant-btn mt-4" onclick="app.goToScreen('screen-welcome')" id="t-restart">Restart Journey</button>
+            <button class="btn-primary giant-btn mt-4" onclick="app.goToScreen('screen-quiz')" id="t-takeQuiz">Take the Quiz! ➔</button>
+        </section>
+
+        <!-- Screen 5: Gamified Quiz -->
+        <section id="screen-quiz" class="screen">
+            <h2 id="t-quizTitle" class="step-title">🏆 Test Your Knowledge</h2>
+            
+            <div id="quiz-container" class="info-card" style="background: white;">
+                <p id="quiz-question" style="font-size: 1.25rem; font-weight: bold; margin-bottom: 20px;">Question 1: Can you wear a political party t-shirt inside the polling booth?</p>
+                
+                <div class="btn-group" style="flex-direction: column; gap: 10px;" id="quiz-options">
+                    <!-- Options injected via JS -->
+                </div>
+            </div>
+
+            <div id="quiz-result" class="info-card hidden alert-box" style="text-align: center;">
+                <h3 style="font-size: 2rem; margin: 0;">🎉</h3>
+                <h3 style="color: #28a745;">Congratulations!</h3>
+                <p>You scored <span id="quiz-score">0</span>/3. You have earned the <strong>Smart Voter Badge!</strong></p>
+                <div class="badge-icon" style="font-size: 4rem; margin: 20px 0; animation: pulse 2s infinite;">🏅</div>
+                <button class="btn-secondary giant-btn mt-4" onclick="app.goToScreen('screen-welcome')" id="t-restart">Restart Journey</button>
+            </div>
         </section>
 
     </main>

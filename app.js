@@ -4,6 +4,13 @@ const app = {
     geminiChat: null,
     isGeminiActive: false,
     waitingForKey: false,
+    quizQuestions: [
+        { q: "Can you use your PAN card to vote if you lost your Voter ID?", options: ["Yes", "No"], answer: 0 },
+        { q: "Are EVMs connected to the internet?", options: ["Yes, for live counting", "No, they are standalone machines"], answer: 1 },
+        { q: "What form do you use if you shifted to a new house?", options: ["Form 6", "Form 8"], answer: 1 }
+    ],
+    currentQuizIndex: 0,
+    quizScore: 0,
 
     init() {
         this.bindEvents();
@@ -53,6 +60,10 @@ const app = {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
         window.scrollTo(0, 0);
+
+        if(screenId === 'screen-quiz') {
+            this.initQuiz();
+        }
 
         // Reset forms when returning to welcome
         if(screenId === 'screen-welcome') {
@@ -321,6 +332,46 @@ const app = {
             content.style.display = 'block';
             btn.innerText = btn.innerText.replace('▼', '▲');
         }
+    },
+
+    // Quiz Logic
+    initQuiz() {
+        this.currentQuizIndex = 0;
+        this.quizScore = 0;
+        document.getElementById('quiz-container').classList.remove('hidden');
+        document.getElementById('quiz-result').classList.add('hidden');
+        this.renderQuizQuestion();
+    },
+
+    renderQuizQuestion() {
+        if (this.currentQuizIndex >= this.quizQuestions.length) {
+            this.showQuizResult();
+            return;
+        }
+        const qData = this.quizQuestions[this.currentQuizIndex];
+        document.getElementById('quiz-question').innerText = `Question ${this.currentQuizIndex + 1}: ${qData.q}`;
+        
+        const optionsDiv = document.getElementById('quiz-options');
+        optionsDiv.innerHTML = '';
+        qData.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-secondary giant-btn';
+            btn.innerText = opt;
+            btn.onclick = () => this.answerQuiz(idx === qData.answer);
+            optionsDiv.appendChild(btn);
+        });
+    },
+
+    answerQuiz(isCorrect) {
+        if (isCorrect) this.quizScore++;
+        this.currentQuizIndex++;
+        this.renderQuizQuestion();
+    },
+
+    showQuizResult() {
+        document.getElementById('quiz-container').classList.add('hidden');
+        document.getElementById('quiz-result').classList.remove('hidden');
+        document.getElementById('quiz-score').innerText = this.quizScore;
     }
 };
 

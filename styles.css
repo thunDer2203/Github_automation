@@ -330,6 +330,12 @@ button:active { transform: translateY(0); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
 .mt-4 { margin-top: 2rem; }
 
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
 /* Hide Google Translate Default Elements */
 .goog-te-banner-frame.skiptranslate { display: none !important; }
 body { top: 0px !important; }
