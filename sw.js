@@ -1,11 +1,13 @@
-const CACHE_NAME = 'vote-edu-v6';
+const CACHE_NAME = 'vote-edu-v7';
 const urlsToCache = [
   './',
   './index.html',
   './styles.css',
   './app.js',
   './manifest.json',
-  './isometric_timeline.png'
+  './isometric_timeline.png',
+  './test.html',
+  './tests.js'
 ];
 
 self.addEventListener('install', event => {
