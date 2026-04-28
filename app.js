@@ -359,21 +359,56 @@ const app = {
             const btn = document.createElement('button');
             btn.className = 'btn-secondary giant-btn';
             btn.innerText = opt;
-            btn.onclick = () => this.answerQuiz(idx === qData.answer);
+            btn.onclick = () => this.answerQuiz(btn, idx === qData.answer, qData.answer);
             optionsDiv.appendChild(btn);
         });
     },
 
-    answerQuiz(isCorrect) {
-        if (isCorrect) this.quizScore++;
-        this.currentQuizIndex++;
-        this.renderQuizQuestion();
+    answerQuiz(btnClicked, isCorrect, correctIdx) {
+        // Disable all buttons to prevent double clicking
+        const optionsDiv = document.getElementById('quiz-options');
+        const buttons = optionsDiv.querySelectorAll('button');
+        buttons.forEach(b => b.disabled = true);
+
+        if (isCorrect) {
+            btnClicked.style.backgroundColor = '#28a745'; // Green
+            btnClicked.style.color = 'white';
+            this.quizScore++;
+        } else {
+            btnClicked.style.backgroundColor = '#dc3545'; // Red
+            btnClicked.style.color = 'white';
+            buttons[correctIdx].style.backgroundColor = '#28a745'; // Highlight correct answer
+            buttons[correctIdx].style.color = 'white';
+        }
+
+        setTimeout(() => {
+            this.currentQuizIndex++;
+            this.renderQuizQuestion();
+        }, 1500);
     },
 
     showQuizResult() {
         document.getElementById('quiz-container').classList.add('hidden');
-        document.getElementById('quiz-result').classList.remove('hidden');
-        document.getElementById('quiz-score').innerText = this.quizScore;
+        const resultDiv = document.getElementById('quiz-result');
+        resultDiv.classList.remove('hidden');
+
+        if (this.quizScore === this.quizQuestions.length) {
+            resultDiv.innerHTML = `
+                <h3 style="font-size: 2rem; margin: 0;">🎉</h3>
+                <h3 style="color: #28a745;">Congratulations!</h3>
+                <p>You scored ${this.quizScore}/3. You have earned the <strong>Smart Voter Badge!</strong></p>
+                <div class="badge-icon" style="font-size: 4rem; margin: 20px 0; animation: pulse 2s infinite;">🏅</div>
+                <button class="btn-secondary giant-btn mt-4" onclick="app.goToScreen('screen-welcome')" id="t-restart">Restart Journey</button>
+            `;
+        } else {
+            resultDiv.innerHTML = `
+                <h3 style="font-size: 2rem; margin: 0;">💡</h3>
+                <h3 style="color: #d39e00;">Almost there!</h3>
+                <p>You scored ${this.quizScore}/3. You need a perfect score to earn the badge.</p>
+                <button class="btn-primary giant-btn mt-4" style="margin-bottom: 10px;" onclick="app.initQuiz()">Try Again ➔</button>
+                <button class="btn-secondary giant-btn" onclick="app.goToScreen('screen-welcome')">Go Home</button>
+            `;
+        }
     }
 };
 
