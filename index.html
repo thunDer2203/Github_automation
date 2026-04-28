@@ -154,7 +154,7 @@
 
             <div id="form8-info" class="info-card hidden alert-box-warning">
                 <h3 id="t-form8Title">⚠️ You need Form 8!</h3>
-                <p id="t-form8Desc">When you move houses, your Voter ID does NOT update automatically. You must fill out <strong>Form 8</strong> for 'Shifting of Residence' online at voters.eci.gov.in or give it to your BLO so you can vote in your new area.</p>
+                <p id="t-form8Desc">When you move houses, your Voter ID does NOT update automatically. You must fill out <strong>Form 8</strong> for 'Shifting of Residence'.<br><br><strong>Did you know?</strong> Form 8 is a multi-purpose form! It is also the official form used for <strong>Corrections</strong> (fixing a misspelled name or wrong age) and requesting a <strong>Replacement Voter ID</strong> if yours is lost.</p>
                 <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
                     <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-formLinkOnline">💻 Apply Online (Requires Login)</a>
                     <a href="https://eci.gov.in/forms/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; padding: 0.8rem;" id="t-formLinkPdf">📄 Download Form 8 PDF (To give to BLO)</a>
@@ -164,7 +164,7 @@
 
             <div id="form6-info" class="info-card hidden alert-box-warning">
                 <h3 id="t-form6Title">⚠️ You need Form 6!</h3>
-                <p id="t-form6Desc">If you haven't moved but your name is missing, it might have been deleted by mistake or you never registered. You need to apply as a new voter using <strong>Form 6</strong> online at voters.eci.gov.in or via your BLO.</p>
+                <p id="t-form6Desc">If you haven't moved but your name is missing, it might have been deleted by mistake or you never registered. You need to apply as a new voter using <strong>Form 6</strong>.<br><br><em>🌍 Are you an NRI (Overseas Citizen)?</em> You must use <strong>Form 6A</strong> instead to register.</p>
                 
                 <div class="helper-block" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ccc;">
                     <h4 style="color: var(--primary-color); margin-top: 0;">📍 Don't know your Constituency?</h4>
@@ -245,6 +245,21 @@
                     <div class="accordion-content">
                         <p><strong>Are EVMs Safe?</strong> Yes! EVMs are standalone machines, like calculators. They are not connected to the internet, Wi-Fi, or Bluetooth, making them impossible to hack remotely.</p>
                         <p><strong>Is it safe to vote?</strong> Yes! Central Armed Police Forces (CRPF) are deployed at sensitive booths to prevent any intimidation. Your vote is 100% secret.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">Lost your Voter ID? ▼</button>
+                    <div class="accordion-content">
+                        <p>Don't panic! As long as your name is on the Electoral Roll, you can still vote. You can show any of these alternative documents to the polling officer:</p>
+                        <ul style="margin: 5px 0; padding-left: 20px;">
+                            <li>Aadhaar Card</li>
+                            <li>PAN Card</li>
+                            <li>Driving License</li>
+                            <li>Indian Passport</li>
+                            <li>MNREGA Job Card</li>
+                        </ul>
+                        <p>If you need a new physical Voter ID card, simply fill out <strong>Form 8</strong> for a replacement.</p>
                     </div>
                 </div>
 

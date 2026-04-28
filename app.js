@@ -204,16 +204,39 @@ const app = {
 
     getBotResponse(text) {
         const lower = text.toLowerCase();
+        
         if (lower.includes('age') || lower.includes('old') || lower.includes('18')) {
             return "You must be 18 years old to vote in India.";
         }
-        if (lower.includes('slip') || lower.includes('find my name')) {
-            return "You can get your slip from voters.eci.gov.in or your local BLO.";
+        if (lower.includes('slip') || lower.includes('find my name') || lower.includes('roll')) {
+            return "You can download your Voter Slip from the Voter Helpline App, voters.eci.gov.in, or by asking your local BLO.";
         }
-        if (lower.includes('home') || lower.includes('senior')) {
-            return "Voters aged 85+ or PwD can vote from home using Form 12D!";
+        if (lower.includes('home') || lower.includes('senior') || lower.includes('pwd')) {
+            return "Voters aged 85+ or Persons with Disabilities (PwD) can vote from home using Form 12D via the Saksham App!";
         }
-        return "I am a simple demo assistant! In the real app, I would connect to an AI to answer this question.";
+        if (lower.includes('form 8') || lower.includes('shift') || lower.includes('correction') || lower.includes('mistake') || lower.includes('lost')) {
+            return "Use Form 8 if you have shifted houses, need to correct mistakes (spelling, age) on your card, or if you lost your card and need a replacement.";
+        }
+        if (lower.includes('form 6a') || lower.includes('nri') || lower.includes('abroad') || lower.includes('overseas')) {
+            return "If you are an NRI (Non-Resident Indian), you must use Form 6A to register to vote.";
+        }
+        if (lower.includes('form 6') || lower.includes('new voter') || lower.includes('register')) {
+            return "New voters should fill out Form 6 to register on the electoral roll.";
+        }
+        if (lower.includes('evm') || lower.includes('hack') || lower.includes('safe') || lower.includes('machine')) {
+            return "EVMs are 100% safe. They are standalone machines with no internet or Bluetooth connectivity, making them impossible to hack remotely.";
+        }
+        if (lower.includes('aadhaar') || lower.includes('pan') || lower.includes('id') || lower.includes('passport')) {
+            return "If you lost your Voter ID card, you can still vote using alternative IDs like your Aadhaar, PAN card, or Passport, provided your name is on the voter list.";
+        }
+        if (lower.includes('helpline') || lower.includes('call') || lower.includes('number') || lower.includes('1950')) {
+            return "You can call the official toll-free Voter Helpline at 1950 for any election-related queries.";
+        }
+        if (lower.includes('blo') || lower.includes('booth level officer')) {
+            return "Your Booth Level Officer (BLO) is a local representative who can help you with forms, slips, and checking the voter list.";
+        }
+        
+        return "I am a simple demo assistant! In a production app, I would connect to a generative AI like Gemini to answer this complex question.";
     },
 
     // Accordion Logic
