@@ -127,6 +127,11 @@
 
             <div id="epic-info" class="info-card hidden alert-box">
                 <p id="t-epicInfo">Don't worry! You can apply for a new Voter ID by filling out Form 6 online at voters.eci.gov.in or by visiting your local BLO.</p>
+                <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
+                    <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
+                    <p style="font-size: 0.9rem; color: #555;">Form 6 will ask for your Assembly Constituency (AC) and Tehsil. Don't worry if you don't know it! It is usually the name of your local district, tehsil headquarters, or major town. On the ECI portal, simply select your State and District, and the dropdown menu will auto-filter the correct Constituencies for you!</p>
+                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 10px;">🔍 Find My Constituency (AC)</button>
+                </div>
                 <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
             </div>
 
