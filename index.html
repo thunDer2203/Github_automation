@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' https://translate.google.com https://translate.googleapis.com; style-src 'self' 'unsafe-inline' https://translate.googleapis.com; font-src 'self'; connect-src 'self' https://translate.googleapis.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com; style-src 'self' 'unsafe-inline' https://translate.googleapis.com; font-src 'self'; connect-src 'self' https://translate.googleapis.com;">
     <title>Election Education Assistant</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
@@ -95,8 +95,8 @@
                 
                 <div class="process-box" id="t-homeVotingSteps" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ccc;">
                     <strong>How to apply:</strong><br><br>
-                    1. <strong>Get Form 12D:</strong> Ask your local BLO (Booth Level Officer) or download it online.<br>
-                    2. <strong>Submit it:</strong> Fill and return the form to the BLO within 5 days of election dates being announced.<br>
+                    1. <strong>Online/App:</strong> Download the <strong>ECI Saksham App</strong> or use the Voter Portal to apply digitally.<br>
+                    2. <strong>Offline:</strong> Get Form 12D from your BLO and return it within 5 days of election dates being announced.<br>
                     3. <strong>Vote securely:</strong> A voting team will visit your home so you can cast your vote secretly!
                 </div>
                 
@@ -215,23 +215,45 @@
             <button class="btn-primary mt-4" onclick="app.goToScreen('screen-smart-bites')" id="t-nextStep">Next Step ➔</button>
         </section>
 
-        <!-- Screen 4: Smart Bites -->
+        <!-- Screen 4: Education Hub -->
         <section id="screen-smart-bites" class="screen">
-            <h2 id="t-smartBitesTitle" class="step-title">🧠 Smart Bites (Easy Learning)</h2>
+            <h2 id="t-smartBitesTitle" class="step-title">🧠 Complete Education Hub</h2>
             
-            <div class="smart-bite-card">
-                <h3 id="t-sb1Title">What is an EVM?</h3>
-                <p id="t-sb1Desc">It's the machine where you press a button to vote.</p>
-            </div>
+            <div class="education-accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">At the Booth: What to do? ▼</button>
+                    <div class="accordion-content">
+                        <p>1. <strong>Verification:</strong> Show your Voter ID/Slip to the Polling Officer.</p>
+                        <p>2. <strong>Inking:</strong> The Second Officer marks your left forefinger with indelible ink.</p>
+                        <p>3. <strong>Signature:</strong> You sign the register.</p>
+                        <p>4. <strong>Voting:</strong> Proceed to the EVM compartment, press the blue button next to your candidate, and listen for the BEEP. Check the VVPAT slip through the glass window!</p>
+                    </div>
+                </div>
 
-            <div class="smart-bite-card">
-                <h3 id="t-sb2Title">What is VVPAT?</h3>
-                <p id="t-sb2Desc">It's a printer next to the EVM. It shows a slip of paper through a glass window so you can check that your vote went to the right person.</p>
-            </div>
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">Do's and Don'ts ▼</button>
+                    <div class="accordion-content">
+                        <p>✅ <strong>DO:</strong> Carry an original valid ID card (Voter ID, Aadhaar, PAN).</p>
+                        <p>✅ <strong>DO:</strong> Check your name on the voter list beforehand.</p>
+                        <p>❌ <strong>DON'T:</strong> Bring mobile phones, cameras, or smartwatches inside the voting compartment.</p>
+                        <p>❌ <strong>DON'T:</strong> Wear clothing with political party symbols.</p>
+                    </div>
+                </div>
 
-            <div class="smart-bite-card">
-                <h3 id="t-sb3Title">What is a BLO?</h3>
-                <p id="t-sb3Desc">A Booth Level Officer. A local person who helps you with voter cards and slips.</p>
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">Security & Reassurance ▼</button>
+                    <div class="accordion-content">
+                        <p><strong>Are EVMs Safe?</strong> Yes! EVMs are standalone machines, like calculators. They are not connected to the internet, Wi-Fi, or Bluetooth, making them impossible to hack remotely.</p>
+                        <p><strong>Is it safe to vote?</strong> Yes! Central Armed Police Forces (CRPF) are deployed at sensitive booths to prevent any intimidation. Your vote is 100% secret.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">The Power of Your Vote ▼</button>
+                    <div class="accordion-content">
+                        <p>Every single vote counts. By voting, you choose the leaders who make decisions about your roads, schools, hospitals, and taxes. Not voting means letting others make these crucial decisions for you!</p>
+                    </div>
+                </div>
             </div>
 
             <button class="btn-secondary giant-btn mt-4" onclick="app.goToScreen('screen-welcome')" id="t-restart">Restart Journey</button>

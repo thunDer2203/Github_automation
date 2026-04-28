@@ -72,6 +72,7 @@ const app = {
 
     // Step 1: Eligibility
     answerAge(isAdult) {
+        document.getElementById('eligibility-q1').classList.add('hidden');
         if (isAdult) {
             document.getElementById('eligibility-q2').classList.remove('hidden');
             document.getElementById('not-eligible-info').classList.add('hidden');
@@ -83,6 +84,7 @@ const app = {
     },
 
     answerSenior(isSenior) {
+        document.getElementById('eligibility-q2').classList.add('hidden');
         if (isSenior) {
             document.getElementById('home-voting-info').classList.remove('hidden');
         } else {
@@ -93,6 +95,7 @@ const app = {
 
     // Step 2: Voter Slip
     answerEpic(hasEpic) {
+        document.getElementById('voter-q1').classList.add('hidden');
         document.getElementById('epic-info').classList.add('hidden');
         document.getElementById('roll-q2').classList.add('hidden');
         document.getElementById('roll-info').classList.add('hidden');
@@ -106,6 +109,7 @@ const app = {
     },
 
     answerRoll(status) {
+        document.getElementById('roll-q2').classList.add('hidden');
         document.getElementById('epic-info').classList.add('hidden');
         document.getElementById('roll-info').classList.add('hidden');
         document.getElementById('voter-slip-info').classList.add('hidden');
@@ -123,6 +127,7 @@ const app = {
     },
 
     answerShift(status) {
+        document.getElementById('shift-q3').classList.add('hidden');
         document.getElementById('form8-info').classList.add('hidden');
         document.getElementById('form6-info').classList.add('hidden');
 
@@ -209,6 +214,22 @@ const app = {
             return "Voters aged 85+ or PwD can vote from home using Form 12D!";
         }
         return "I am a simple demo assistant! In the real app, I would connect to an AI to answer this question.";
+    },
+
+    // Accordion Logic
+    toggleAccordion(btn) {
+        const content = btn.nextElementSibling;
+        const isOpen = content.style.display === 'block';
+        
+        // Close all other accordions
+        document.querySelectorAll('.accordion-content').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.accordion-header').forEach(el => el.innerText = el.innerText.replace('▲', '▼'));
+        
+        // Toggle the clicked one
+        if (!isOpen) {
+            content.style.display = 'block';
+            btn.innerText = btn.innerText.replace('▼', '▲');
+        }
     }
 };
 
