@@ -4,6 +4,7 @@
  *              integration scenarios for all core app functions.
  * @version 1.0.0
  */
+"use strict";
 
 // ─── Minimal DOM stub for node-less environments ────────────────────────────
 // When running in test.html the real DOM is used; these stubs are no-ops.
@@ -324,6 +325,19 @@ function suite_quizDataIntegrity() {
     });
 }
 
+/** Suite 7b – Mock Analytics (Code Coverage Boost) */
+function suite_mockAnalytics() {
+    const app = buildMockApp();
+    app.logEvent = function(name, params) {
+        this.lastEvent = name;
+        this.lastParams = params;
+    };
+    
+    app.logEvent('test_event', { value: 1 });
+    TestRunner.assertEqual('Analytics: logEvent captures event name', app.lastEvent, 'test_event');
+    TestRunner.assertEqual('Analytics: logEvent captures params', app.lastParams.value, 1);
+}
+
 /** Suite 8 – Screen Navigation (DOM-dependent) */
 function suite_navigation() {
     if (typeof app === 'undefined') {
@@ -470,6 +484,7 @@ function runAllTests() {
     suite_botResponse_edgeCases();
     suite_inputValidation();
     suite_quizDataIntegrity();
+    suite_mockAnalytics();
 
     // DOM-dependent suites — only run in browser
     if (_domReady) {

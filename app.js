@@ -4,6 +4,7 @@
  *              EVM simulation for Indian election education.
  * @version 2.0.0
  */
+"use strict";
 
 /** @constant {number} Default base font size in pixels */
 const DEFAULT_FONT_SIZE = 16;
