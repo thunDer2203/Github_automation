@@ -16,13 +16,21 @@ html {
 *, *:before, *:after { box-sizing: inherit; }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #e6ecf2 0%, #ffffff 100%);
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(-45deg, #003366, #0055b3, #e6ecf2, #ffffff);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     background-attachment: fixed;
     color: var(--text-color);
     margin: 0;
     padding: 0;
-    line-height: 1.5;
+    line-height: 1.6;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* Accessibility Top Bar */
@@ -65,12 +73,12 @@ select {
 #app-container {
     max-width: 800px;
     margin: 2rem auto;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(255, 255, 255, 0.90);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: var(--border-radius);
-    padding: 2rem;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0, 51, 102, 0.15); /* ECI Blue subtle shadow */
 }
 
 .center-content { text-align: center; }
@@ -87,15 +95,20 @@ select {
 }
 
 /* Typography & Buttons */
-.step-title {
-    color: var(--primary-color);
-    font-size: 2rem;
-    border-bottom: 3px solid var(--primary-color);
-    padding-bottom: 0.5rem;
-    margin-bottom: 2rem;
+h1, h2, h3, h4, .step-title {
+    font-family: 'Outfit', sans-serif;
 }
 
-h3 { font-size: 1.5rem; }
+.step-title {
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    font-weight: 800;
+    border-bottom: 4px solid var(--error-color); /* Saffron underline */
+    padding-bottom: 0.5rem;
+    margin-bottom: 2.5rem;
+}
+
+h3 { font-size: 1.6rem; font-weight: 700; }
 
 .btn-group {
     display: flex;
