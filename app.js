@@ -1,6 +1,30 @@
+/**
+ * @fileoverview Election Education Assistant – Main Application Logic
+ * @description Provides guided voter journey, quiz, chat assistant, and
+ *              EVM simulation for Indian election education.
+ * @version 2.0.0
+ */
+
+/** @constant {number} Default base font size in pixels */
+const DEFAULT_FONT_SIZE = 16;
+/** @constant {number} Minimum allowed font size in pixels */
+const MIN_FONT_SIZE = 12;
+/** @constant {number} Maximum allowed font size in pixels */
+const MAX_FONT_SIZE = 24;
+/** @constant {number} Step size for font size adjustments */
+const FONT_STEP = 2;
+/** @constant {number} Maximum allowed chat input length */
+const MAX_CHAT_LENGTH = 500;
+/** @constant {string} Gemini model to use for AI chat */
+const GEMINI_MODEL = 'gemini-1.5-flash';
+/** @constant {number} EVM beep frequency in Hz */
+const EVM_BEEP_HZ = 800;
+/** @constant {number} EVM beep duration in seconds */
+const EVM_BEEP_DURATION = 1.5;
+
 const app = {
     currentLang: 'en',
-    currentFontSize: 16,
+    currentFontSize: DEFAULT_FONT_SIZE,
     geminiChat: null,
     isGeminiActive: false,
     waitingForKey: false,
@@ -12,63 +36,89 @@ const app = {
     currentQuizIndex: 0,
     quizScore: 0,
 
+    /**
+     * Initialises the application by binding all DOM event listeners.
+     * Called once on window load.
+     */
     init() {
         this.bindEvents();
     },
 
+    /**
+     * Binds all DOM event listeners for accessibility controls and chat input.
+     */
     bindEvents() {
-
         document.getElementById('btn-font-increase').addEventListener('click', () => {
-            if (this.currentFontSize < 24) {
-                this.currentFontSize += 2;
+            if (this.currentFontSize < MAX_FONT_SIZE) {
+                this.currentFontSize += FONT_STEP;
                 document.documentElement.style.fontSize = this.currentFontSize + 'px';
             }
         });
 
         document.getElementById('btn-font-decrease').addEventListener('click', () => {
-            if (this.currentFontSize > 12) {
-                this.currentFontSize -= 2;
+            if (this.currentFontSize > MIN_FONT_SIZE) {
+                this.currentFontSize -= FONT_STEP;
                 document.documentElement.style.fontSize = this.currentFontSize + 'px';
             }
         });
 
-        // Chat Enter key
+        // Submit chat on Enter key
         document.getElementById('chat-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.sendMessage();
         });
     },
 
+    /**
+     * Triggers the hidden Google Translate widget to switch language.
+     * Fires a Firebase Analytics `language_change` event for tracking.
+     * @param {string} langCode - BCP-47 language code (e.g. 'hi', 'ta').
+     */
     triggerGoogleTranslate(langCode) {
         const selectBox = document.querySelector(".goog-te-combo");
         if (selectBox) {
             selectBox.value = langCode;
             selectBox.dispatchEvent(new Event("change", { bubbles: true, cancelable: true }));
+            this.logEvent('language_change', { language: langCode });
         } else {
             console.error("Google Translate is still loading. Please try again in a second.");
         }
     },
 
+    /**
+     * Uses the Web Speech API to read the visible screen content aloud.
+     * Respects the currently selected language code.
+     */
     readAloud() {
         window.speechSynthesis.cancel();
         const activeScreen = document.querySelector('.screen.active');
         if (!activeScreen) return;
-        
         const utterance = new SpeechSynthesisUtterance(activeScreen.innerText);
         utterance.lang = document.getElementById('lang-toggle').value || 'en';
         window.speechSynthesis.speak(utterance);
     },
 
+    /**
+     * Opens the official ECI electoral search portal for constituency lookup.
+     * Logs a Firebase Analytics event for funnel tracking.
+     */
     findConstituency() {
+        this.logEvent('find_constituency_clicked');
         alert("To find your exact Assembly Constituency (AC) and Tehsil:\n\n1. Select 'Search by Details' on the next screen.\n2. Enter your State and District.\n3. The portal will automatically find your Constituency!");
         window.open("https://electoralsearch.eci.gov.in/", "_blank");
     },
 
+    /**
+     * Navigates to a named screen, hiding all others.
+     * Logs a `screen_view` event to Firebase Analytics on every transition.
+     * @param {string} screenId - The DOM `id` of the target screen section.
+     */
     goToScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
         window.scrollTo(0, 0);
+        this.logEvent('screen_view', { screen_name: screenId });
 
-        if(screenId === 'screen-quiz') {
+        if (screenId === 'screen-quiz') {
             this.initQuiz();
         }
 
@@ -221,54 +271,71 @@ const app = {
         this.playBeep();
     },
 
+    /**
+     * Plays a synthetic beep via the Web Audio API to simulate the EVM sound.
+     * Falls back silently if the Audio API is blocked or unavailable.
+     */
     playBeep() {
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, ctx.currentTime); // 800Hz beep
+            osc.frequency.setValueAtTime(EVM_BEEP_HZ, ctx.currentTime);
             osc.connect(ctx.destination);
             osc.start();
-            osc.stop(ctx.currentTime + 1.5); // long beep for VVPAT
+            osc.stop(ctx.currentTime + EVM_BEEP_DURATION);
         } catch (e) {
             console.log("Audio API not supported or blocked");
         }
     },
 
     // Chat
+    /**
+     * Toggles the chat assistant overlay open or closed.
+     * On first open, attempts to initialise Gemini with a saved API key,
+     * or prompts the user for a key (BYOK flow).
+     * Logs a `chat_opened` event to Firebase Analytics.
+     */
     toggleChat() {
         const chatWindow = document.getElementById('chat-window');
         chatWindow.classList.toggle('hidden');
-        
-        // Init BYOK Gemini on first open
-        if (!chatWindow.classList.contains('hidden') && !this.isGeminiActive && !this.waitingForKey) {
-            const savedKey = localStorage.getItem('gemini_api_key');
-            if (savedKey) {
-                this.initGemini(savedKey);
-            } else {
-                this.waitingForKey = true;
-                this.addChatBubble("Hello! I can connect to Google Gemini for smart answers. Please paste your Gemini API Key here to activate AI mode. (Or type 'skip' to use the offline assistant).", 'bot');
+
+        if (!chatWindow.classList.contains('hidden')) {
+            this.logEvent('chat_opened');
+            // Init BYOK Gemini on first open
+            if (!this.isGeminiActive && !this.waitingForKey) {
+                const savedKey = localStorage.getItem('gemini_api_key');
+                if (savedKey) {
+                    this.initGemini(savedKey);
+                } else {
+                    this.waitingForKey = true;
+                    this.addChatBubble("Hello! I can connect to Google Gemini for smart answers. Please paste your Gemini API Key here to activate AI mode. (Or type 'skip' to use the offline assistant).", 'bot');
+                }
             }
         }
     },
 
+    /**
+     * Initialises the Google Gemini generative AI chat session.
+     * Tests the provided API key with a handshake message before activating.
+     * Persists the key to localStorage on success.
+     * @param {string} apiKey - The user-supplied Gemini API key.
+     */
     async initGemini(apiKey) {
         try {
             this.addChatBubble("⏳ Connecting to Google Gemini...", 'bot');
             const { GoogleGenerativeAI } = await import("https://esm.run/@google/generative-ai");
             const genAI = new GoogleGenerativeAI(apiKey);
-            const model = genAI.getGenerativeModel({ 
-                model: "gemini-1.5-flash", 
-                systemInstruction: "You are an official Indian Election Education Assistant. Provide concise, accurate information about Indian electoral processes (Form 6, Form 8, Form 12D, EVMs, VVPAT, etc.). Keep answers short and 'dumb-person friendly'. Do not hallucinate laws." 
+            const model = genAI.getGenerativeModel({
+                model: GEMINI_MODEL,
+                systemInstruction: "You are an official Indian Election Education Assistant. Provide concise, accurate information about Indian electoral processes (Form 6, Form 8, Form 12D, EVMs, VVPAT, etc.). Keep answers short and 'dumb-person friendly'. Do not hallucinate laws."
             });
             this.geminiChat = model.startChat({ history: [] });
-            
-            // test the key
-            await this.geminiChat.sendMessage("Hello");
-            
+            await this.geminiChat.sendMessage("Hello"); // key validation handshake
             this.isGeminiActive = true;
             this.waitingForKey = false;
             localStorage.setItem('gemini_api_key', apiKey);
+            this.logEvent('gemini_activated');
             this.addChatBubble("✅ Gemini Activated! What would you like to ask about the elections?", 'bot');
         } catch (e) {
             console.error(e);
@@ -278,10 +345,21 @@ const app = {
         }
     },
 
+    /**
+     * Reads the chat input, validates it, and dispatches to either the
+     * Gemini AI or the offline keyword-based bot response engine.
+     * Sanitises input to enforce max length and non-empty constraints.
+     */
     async sendMessage() {
         const input = document.getElementById('chat-input');
         const text = input.value.trim();
-        if (!text) return;
+        // Input validation: reject empty or excessively long messages
+        if (!text || text.length > MAX_CHAT_LENGTH) {
+            if (text.length > MAX_CHAT_LENGTH) {
+                this.addChatBubble(`⚠️ Message too long. Please keep it under ${MAX_CHAT_LENGTH} characters.`, 'bot');
+            }
+            return;
+        }
 
         this.addChatBubble(text, 'user');
         input.value = '';
@@ -387,7 +465,12 @@ const app = {
         }
     },
 
-    // Quiz Logic
+    // ---- Quiz Logic ----
+
+    /**
+     * Resets and starts the quiz from question 1.
+     * Hides the result card and renders the first question.
+     */
     initQuiz() {
         this.currentQuizIndex = 0;
         this.quizScore = 0;
@@ -438,7 +521,16 @@ const app = {
         }, 1500);
     },
 
+    /**
+     * Fires a Firebase Analytics `quiz_complete` event with the final score,
+     * then renders the appropriate result card (badge or retry prompt).
+     */
     showQuizResult() {
+        this.logEvent('quiz_complete', {
+            score: this.quizScore,
+            total: this.quizQuestions.length,
+            perfect: this.quizScore === this.quizQuestions.length
+        });
         document.getElementById('quiz-container').classList.add('hidden');
         const resultDiv = document.getElementById('quiz-result');
         resultDiv.classList.remove('hidden');
@@ -459,6 +551,22 @@ const app = {
                 <button class="btn-primary giant-btn mt-4" style="margin-bottom: 10px;" onclick="app.initQuiz()">Try Again ➔</button>
                 <button class="btn-secondary giant-btn" onclick="app.goToScreen('screen-welcome')">Go Home</button>
             `;
+        }
+    },
+    /**
+     * Safely logs an event to Firebase Analytics if the SDK is available.
+     * Fails silently so analytics never breaks the app.
+     * @param {string} eventName  - Firebase Analytics event name.
+     * @param {object} [params={}] - Optional event parameters.
+     */
+    logEvent(eventName, params = {}) {
+        try {
+            // Use the window bridge set up by the Firebase ES module in index.html
+            if (typeof window.__analyticsReady === 'function') {
+                window.__analyticsReady(eventName, params);
+            }
+        } catch (e) {
+            // Analytics unavailable — fail silently
         }
     }
 };

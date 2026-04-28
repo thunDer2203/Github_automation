@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com; style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://www.gstatic.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://translate.googleapis.com https://translate-pa.googleapis.com;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://www.gstatic.com https://esm.run https://cdn.jsdelivr.net https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://www.gstatic.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://translate.googleapis.com https://translate-pa.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com; frame-src https://www.google.com https://maps.google.com;">
     <title>Election Education Assistant</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,6 +11,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#003366">
+
+    <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+        import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+
+        // Public analytics-only config — safe to include in client code
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAatIKqW6dz9CFDtdbRVZ1D_szTUfz3MM",
+            authDomain: "election-education-78fc2.firebaseapp.com",
+            projectId: "election-education-78fc2",
+            storageBucket: "election-education-78fc2.firebasestorage.app",
+            messagingSenderId: "935322641719",
+            appId: "1:935322641719:web:023151065705bd54ec66b2",
+            measurementId: "G-VCS4V4KSQE"
+        };
+
+        try {
+            const fbApp = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(fbApp);
+
+            // Expose analytics to app.js logEvent wrapper
+            window._firebaseAnalytics = analytics;
+            window._firebaseLogEvent  = logEvent;
+
+            // Log initial page view
+            logEvent(analytics, 'page_view', { page_title: 'Election Education Assistant' });
+        } catch(e) {
+            console.warn('Firebase Analytics init skipped:', e.message);
+        }
+    </script>
 </head>
 <body>
 
@@ -138,8 +169,16 @@
                 <p id="t-epicInfo">Don't worry! You can apply for a new Voter ID by filling out Form 6 online at voters.eci.gov.in or by visiting your local BLO.</p>
                 <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
                     <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
-                    <p style="font-size: 0.9rem; color: #555;">Form 6 will ask for your Assembly Constituency (AC) and Tehsil. Don't worry if you don't know it! It is usually the name of your local district, tehsil headquarters, or major town. On the ECI portal, simply select your State and District, and the dropdown menu will auto-filter the correct Constituencies for you!</p>
-                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 10px;">🔍 Find My Constituency (AC)</button>
+                    <p style="font-size: 0.9rem; color: #555;">Form 6 will ask for your Assembly Constituency (AC) and Tehsil. Use the map below or search the ECI portal — select your State and District to auto-filter the correct Constituencies.</p>
+                    <!-- Google Maps embed: search for ECI offices near user -->
+                    <iframe
+                        title="Find ECI Voter Registration Office Near You"
+                        src="https://maps.google.com/maps?q=Election+Commission+voter+registration+office+India&output=embed&z=5"
+                        width="100%" height="220" style="border:0; border-radius:8px; margin: 10px 0;"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        aria-label="Google Map showing Election Commission offices across India">
+                    </iframe>
+                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 4px;">🔍 Find My Constituency on ECI Portal</button>
                 </div>
                 <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep">Next Step ➔</button>
             </div>
@@ -165,8 +204,15 @@
                 </div>
                 <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
                     <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
-                    <p style="font-size: 0.9rem; color: #555;">Don't know your Assembly Constituency (AC) or Tehsil? It is usually the name of your local district, tehsil headquarters, or major town. On the ECI portal, simply enter your State and District, and the system will auto-filter the correct Constituencies for you!</p>
-                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 10px;">🔍 Find My Constituency (AC)</button>
+                    <p style="font-size: 0.9rem; color: #555;">Don't know your Assembly Constituency (AC) or Tehsil? Use the map below or visit the ECI portal — select your State and District and the system will auto-filter the correct Constituencies.</p>
+                    <iframe
+                        title="Find ECI Voter Search Portal Near You"
+                        src="https://maps.google.com/maps?q=Electoral+Registration+Officer+India&output=embed&z=5"
+                        width="100%" height="200" style="border:0; border-radius:8px; margin: 10px 0;"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        aria-label="Google Map showing Electoral Registration Officers across India">
+                    </iframe>
+                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 4px;">🔍 Find My Constituency on ECI Portal</button>
                 </div>
                 <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
                     <a href="https://electoralsearch.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-searchBtn">🔗 Open ECI Official Search</a>
@@ -201,8 +247,15 @@
                 
                 <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
                     <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
-                    <p style="font-size: 0.9rem; color: #555;">Form 6 will ask for your Assembly Constituency (AC) and Tehsil. Don't worry if you don't know it! It is usually the name of your local district, tehsil headquarters, or major town. On the ECI portal, simply select your State and District, and the dropdown menu will auto-filter the correct Constituencies for you!</p>
-                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 10px;">🔍 Find My Constituency (AC)</button>
+                    <p style="font-size: 0.9rem; color: #555;">Form 6 will ask for your Assembly Constituency (AC) and Tehsil. Use the map or ECI portal — select your State and District and the dropdown will auto-filter the correct Constituency for you.</p>
+                    <iframe
+                        title="Find Your Assembly Constituency Office"
+                        src="https://maps.google.com/maps?q=Voter+Helpline+Election+Commission+India&output=embed&z=5"
+                        width="100%" height="200" style="border:0; border-radius:8px; margin: 10px 0;"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        aria-label="Google Map showing Voter Helpline centres across India">
+                    </iframe>
+                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 4px;">🔍 Find My Constituency on ECI Portal</button>
                 </div>
 
                 <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
@@ -363,6 +416,13 @@
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element');
         }
+
+        // Bridge window._firebaseLogEvent → app.logEvent (loaded after Firebase module)
+        window.__analyticsReady = function(eventName, params) {
+            if (window._firebaseAnalytics && window._firebaseLogEvent) {
+                window._firebaseLogEvent(window._firebaseAnalytics, eventName, params || {});
+            }
+        };
     </script>
     <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script src="app.js"></script>
