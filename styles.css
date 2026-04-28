@@ -1,11 +1,11 @@
 :root {
-    --primary-color: #003366; /* ECI Deep Blue */
-    --primary-hover: #002244;
+    --primary-color: #5146A8;   /* India Gov Stack Purple (DigiLocker/UMANG/Aadhaar) */
+    --primary-hover: #3d3690;
     --secondary-color: #f1f3f4;
-    --text-color: #202124;
+    --text-color: #1a1a2e;
     --bg-color: #ffffff;
-    --error-color: #FF9933; /* Saffron */
-    --success-color: #138808; /* India Green */
+    --error-color: #FF9933;     /* ECI Saffron */
+    --success-color: #138808;   /* India Green */
     --border-radius: 12px;
 }
 
@@ -17,7 +17,7 @@ html {
 
 body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(-45deg, #003366, #0055b3, #e6ecf2, #ffffff);
+    background: linear-gradient(-45deg, #3d3690, #5146A8, #dddaf5, #ffffff);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
     background-attachment: fixed;
