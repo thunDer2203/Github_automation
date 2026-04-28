@@ -1,6 +1,9 @@
 const app = {
     currentLang: 'en',
     currentFontSize: 16,
+    geminiChat: null,
+    isGeminiActive: false,
+    waitingForKey: false,
 
     init() {
         this.bindEvents();
@@ -170,36 +173,101 @@ const app = {
 
     // Chat
     toggleChat() {
-        const chat = document.getElementById('chat-window');
-        chat.classList.toggle('hidden');
+        const chatWindow = document.getElementById('chat-window');
+        chatWindow.classList.toggle('hidden');
+        
+        // Init BYOK Gemini on first open
+        if (!chatWindow.classList.contains('hidden') && !this.isGeminiActive && !this.waitingForKey) {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                this.initGemini(savedKey);
+            } else {
+                this.waitingForKey = true;
+                this.addChatBubble("Hello! I can connect to Google Gemini for smart answers. Please paste your Gemini API Key here to activate AI mode. (Or type 'skip' to use the offline assistant).", 'bot');
+            }
+        }
     },
 
-    sendMessage() {
+    async initGemini(apiKey) {
+        try {
+            this.addChatBubble("⏳ Connecting to Google Gemini...", 'bot');
+            const { GoogleGenerativeAI } = await import("https://esm.run/@google/generative-ai");
+            const genAI = new GoogleGenerativeAI(apiKey);
+            const model = genAI.getGenerativeModel({ 
+                model: "gemini-1.5-flash", 
+                systemInstruction: "You are an official Indian Election Education Assistant. Provide concise, accurate information about Indian electoral processes (Form 6, Form 8, Form 12D, EVMs, VVPAT, etc.). Keep answers short and 'dumb-person friendly'. Do not hallucinate laws." 
+            });
+            this.geminiChat = model.startChat({ history: [] });
+            
+            // test the key
+            await this.geminiChat.sendMessage("Hello");
+            
+            this.isGeminiActive = true;
+            this.waitingForKey = false;
+            localStorage.setItem('gemini_api_key', apiKey);
+            this.addChatBubble("✅ Gemini Activated! What would you like to ask about the elections?", 'bot');
+        } catch (e) {
+            console.error(e);
+            this.addChatBubble("❌ Invalid API Key or network error. Please paste a valid key or type 'skip'.", 'bot');
+            localStorage.removeItem('gemini_api_key');
+            this.waitingForKey = true;
+        }
+    },
+
+    async sendMessage() {
         const input = document.getElementById('chat-input');
         const text = input.value.trim();
         if (!text) return;
 
-        const body = document.getElementById('chat-body');
-        
-        // User message
-        const userDiv = document.createElement('div');
-        userDiv.className = 'chat-bubble user';
-        userDiv.innerText = text;
-        body.appendChild(userDiv);
-
+        this.addChatBubble(text, 'user');
         input.value = '';
-        body.scrollTop = body.scrollHeight;
 
-        // Mock Bot Response (Simulating a simple AI)
+        if (this.waitingForKey) {
+            if (text.toLowerCase() === 'skip') {
+                this.waitingForKey = false;
+                this.addChatBubble("Using standard offline assistant. How can I help?", 'bot');
+            } else {
+                this.initGemini(text);
+            }
+            return;
+        }
+
+        if (this.isGeminiActive && this.geminiChat) {
+            try {
+                const typingBubble = this.addChatBubble("Typing...", 'bot');
+                const result = await this.geminiChat.sendMessage(text);
+                const mdText = result.response.text()
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+                typingBubble.innerHTML = mdText;
+            } catch(e) {
+                console.error(e);
+                this.addChatBubble("Error communicating with Gemini. Falling back to offline assistant...", 'bot');
+                this.isGeminiActive = false;
+                setTimeout(() => {
+                    const response = this.getBotResponse(text);
+                    this.addChatBubble(response, 'bot');
+                }, 500);
+            }
+            return;
+        }
+
+        // Simulate thinking offline
         setTimeout(() => {
-            const botDiv = document.createElement('div');
-            botDiv.className = 'chat-bubble bot';
-            
-            botDiv.innerText = this.getBotResponse(text);
-            
-            body.appendChild(botDiv);
-            body.scrollTop = body.scrollHeight;
+            const response = this.getBotResponse(text);
+            this.addChatBubble(response, 'bot');
         }, 600);
+    },
+
+    addChatBubble(text, sender) {
+        const body = document.getElementById('chat-body');
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${sender}`;
+        bubble.innerHTML = text;
+        body.appendChild(bubble);
+        body.scrollTop = body.scrollHeight;
+        return bubble;
     },
 
     getBotResponse(text) {
