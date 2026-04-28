@@ -58,6 +58,11 @@ const app = {
         window.speechSynthesis.speak(utterance);
     },
 
+    findConstituency() {
+        alert("To find your exact Assembly Constituency (AC) and Tehsil:\n\n1. Select 'Search by Details' on the next screen.\n2. Enter your State and District.\n3. The portal will automatically find your Constituency!");
+        window.open("https://electoralsearch.eci.gov.in/", "_blank");
+    },
+
     goToScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(screenId).classList.add('active');
