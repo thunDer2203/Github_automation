@@ -24,7 +24,7 @@ export default function Dashboard() {
   return (
     <div className="p-10">
       <img
-        src={user.avatar}
+        src={user.avatarUrl}
         width={100}
         alt="avatar"
       />

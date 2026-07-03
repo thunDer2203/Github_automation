@@ -3,6 +3,8 @@ import express from "express";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
+import gitHubRoutes from "./routes/github.routes.js";
+import repoRoutes from "./routes/repo.routes.js";
 
 import "./config/passport.js";
 
@@ -30,5 +32,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/auth", authRoutes);
+app.use("/github",gitHubRoutes);
+app.use("/repos", repoRoutes);
 
 export default app;
