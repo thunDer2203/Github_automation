@@ -1,5 +1,19 @@
-import {Router} from "express";
+import express from "express";
 
-const router = Router();
+import {
+    connectRepository,
+    disconnectRepository,
+    getRepositories,
+} from "../controllers/repository.controller.js";
+
+import { isAuthenticated } from "../middleware/isAuth.js";
+
+const router = express.Router();
+
+router.get("/", isAuthenticated, getRepositories);
+
+router.post("/", isAuthenticated, connectRepository);
+
+router.delete("/:id", isAuthenticated, disconnectRepository);
 
 export default router;
