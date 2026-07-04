@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import { getGitHubClient } from "../services/github.services.js";
 
 export const getRepositories = async (req, res) => {
     try {
@@ -55,7 +56,38 @@ export const connectRepository = async (req, res) => {
                 userId: req.user.id,
             },
         });
+        const octokit = getGitHubClient(req.user.accessToken);
 
+        const webhook = await octokit.request(
+    "POST /repos/{owner}/{repo}/hooks",
+    {
+        owner,
+        repo: name,
+
+        config: {
+            url: `${process.env.YOUR_PUBLIC_URL}/webhooks/github`,
+            content_type: "json",
+            secret: process.env.GITHUB_WEBHOOK_SECRET,
+        },
+
+        events: [
+            "issues",
+            "pull_request",
+            "push",
+        ],
+
+        active: true,
+    }
+);
+
+        await prisma.repository.update({
+    where: {
+        id: repository.id,
+    },
+    data: {
+        webhookId: webhook.data.id,
+    },
+});
         res.status(201).json(repository);
     } catch (err) {
         console.error(err);
