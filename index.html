@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://translate.google.com https://translate.googleapis.com https://translate-pa.googleapis.com https://www.gstatic.com https://esm.run https://cdn.jsdelivr.net https://www.googleapis.com; style-src 'self' 'unsafe-inline' https://translate.googleapis.com https://www.gstatic.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://translate.googleapis.com https://translate-pa.googleapis.com https://firebaseinstallations.googleapis.com https://firebase.googleapis.com https://www.googleapis.com; frame-src https://www.google.com https://maps.google.com;">
+    <title>Election Education Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#003366">
+
+    <!-- Firebase Analytics -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+        import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+
+        // Public analytics-only config — safe to include in client code
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAatIKqW6dz9CFDtdbRVZ1D_szTUfz3MM",
+            authDomain: "election-education-78fc2.firebaseapp.com",
+            projectId: "election-education-78fc2",
+            storageBucket: "election-education-78fc2.firebasestorage.app",
+            messagingSenderId: "935322641719",
+            appId: "1:935322641719:web:023151065705bd54ec66b2",
+            measurementId: "G-VCS4V4KSQE"
+        };
+
+        try {
+            const fbApp = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(fbApp);
+
+            // Expose analytics to app.js logEvent wrapper
+            window._firebaseAnalytics = analytics;
+            window._firebaseLogEvent  = logEvent;
+
+            // Log initial page view
+            logEvent(analytics, 'page_view', { page_title: 'Election Education Assistant' });
+        } catch(e) {
+            console.warn('Firebase Analytics init skipped:', e.message);
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Top Navigation & Accessibility Bar -->
+    <header class="top-bar">
+        <h1 id="t-title">Election Education Assistant</h1>
+        <div class="accessibility-controls">
+            <div class="lang-selector">
+                <label for="lang-toggle">Language:</label>
+                <select id="lang-toggle" aria-label="Select Language" onchange="app.triggerGoogleTranslate(this.value)">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="bn">বাংলা (Bengali)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                    <option value="ta">தமிழ் (Tamil)</option>
+                    <option value="gu">ગુજરાતી (Gujarati)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <!-- Google Translate will handle these dynamically -->
+                </select>
+                <!-- Hidden original google widget -->
+                <div id="google_translate_element" style="display:none;"></div>
+            </div>
+            <div class="font-controls">
+                <button id="btn-read-aloud" aria-label="Read text aloud" onclick="app.readAloud()">🔊 Read</button>
+                <button id="btn-font-decrease" aria-label="Decrease font size">A-</button>
+                <button id="btn-font-increase" aria-label="Increase font size">A+</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-container">
+        
+        <!-- Screen 0: Welcome -->
+        <section id="screen-welcome" class="screen active">
+            <div class="center-content">
+                <h2 id="t-welcome" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 2rem;">Welcome! Let's get you ready to vote.</h2>
+                <div class="btn-group" style="flex-direction: column;">
+                    <button class="btn-primary giant-btn" onclick="app.goToScreen('screen-eligibility')">
+                        <span class="icon">🚶‍♂️</span> <span id="t-startJourney">Start My Voter Journey</span>
+                    </button>
+                    <button class="btn-secondary giant-btn" onclick="app.goToScreen('screen-timeline')" style="margin-top: 10px;">
+                        <span class="icon">📅</span> <span>See Election Timeline</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screen Timeline -->
+        <section id="screen-timeline" class="screen">
+            <h2 class="step-title">The Election Timeline</h2>
+            <button class="btn-back" onclick="app.goToScreen('screen-welcome')">← Back</button>
+            <div class="info-card" style="background: white;">
+                <img src="isometric_timeline.png" alt="Isometric infographic of the Election Timeline" style="max-width: 100%; border-radius: 12px; margin-bottom: 15px; border: 1px solid #eee;">
+                <p><strong>1. Registration Cutoff:</strong> You must apply before nominations begin.</p>
+                <p><strong>2. BLO Verification:</strong> A local officer verifies your address.</p>
+                <p><strong>3. Final Roll:</strong> Your name is added to the official voter list.</p>
+                <p><strong>4. Polling Day:</strong> You receive your slip and cast your vote!</p>
+                <button class="btn-primary" onclick="app.goToScreen('screen-eligibility')">Start Registration Journey ➔</button>
+            </div>
+        </section>
+
+        <!-- Screen 1: Eligibility & Home Voting -->
+        <section id="screen-eligibility" class="screen">
+            <h2 id="t-step1Title" class="step-title">Step 1: Check Eligibility</h2>
+            
+            <div id="eligibility-q1" class="question-card">
+                <button class="btn-back" onclick="app.goToScreen('screen-welcome')">← Back</button>
+                <h3 id="t-ageQuestion">Are you 18 years or older?</h3>
+                <div class="btn-group">
+                    <button class="btn-secondary giant-btn" onclick="app.answerAge(true)" id="t-yes-age">Yes</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerAge(false)" id="t-no-age">No</button>
+                </div>
+            </div>
+
+            <div id="eligibility-q2" class="question-card hidden">
+                <button class="btn-back" onclick="app.goBack_eligibilityQ2()">← Back</button>
+                <h3 id="t-seniorQuestion">Are you 85 years or older, or a Person with Disability (PwD)?</h3>
+                <div class="btn-group">
+                    <button class="btn-secondary giant-btn" onclick="app.answerSenior(true)" id="t-yes-senior">Yes</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerSenior(false)" id="t-no-senior">No</button>
+                </div>
+            </div>
+
+            <div id="home-voting-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_homeVoting()">← Back</button>
+                <h3 id="t-homeVotingTitle">🏡 Home Voting Available!</h3>
+                <p id="t-homeVotingDesc">Great news! Since you are a senior citizen or PwD, the Election Commission allows you to vote from the comfort of your home using Form 12D. Election officials will visit your house.</p>
+                
+                <div class="process-box" id="t-homeVotingSteps" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ccc;">
+                    <strong>How to apply:</strong><br><br>
+                    1. <strong>Online/App:</strong> Download the <strong>ECI Saksham App</strong> or use the Voter Portal to apply digitally.<br>
+                    2. <strong>Offline:</strong> Get Form 12D from your BLO and return it within 5 days of election dates being announced.<br>
+                    3. <strong>Vote securely:</strong> A voting team will visit your home so you can cast your vote secretly!
+                </div>
+                
+                <div class="btn-group" style="margin-bottom: 20px;">
+                    <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-homeVotingLink">🔗 Download Form 12D Here</a>
+                </div>
+
+                <button class="btn-primary" onclick="app.goToScreen('screen-voter-slip')" id="t-nextStep-homeVoting">Next Step ➔</button>
+            </div>
+
+            <div id="not-eligible-info" class="info-card hidden alert-box-warning">
+                <p id="t-notEligible">You must be 18 to vote. Keep learning for the future!</p>
+                <button class="btn-secondary" onclick="app.goToScreen('screen-welcome')" id="t-restart-notEligible">Restart Journey</button>
+            </div>
+        </section>
+
+        <!-- Screen 2: Voter Slip & Roll -->
+        <section id="screen-voter-slip" class="screen">
+            <h2 id="t-step2Title" class="step-title">Step 2: Voter ID & Electoral Roll</h2>
+            
+            <div id="voter-q1" class="question-card">
+                <button class="btn-back" onclick="app.goToScreen('screen-eligibility')">← Back</button>
+                <h3 id="t-epicQuestion">Do you have a Voter ID Card (EPIC)?</h3>
+                <div class="btn-group">
+                    <button class="btn-secondary giant-btn" onclick="app.answerEpic(true)" id="t-yesEpic">Yes, I have it</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerEpic(false)" id="t-noEpic">No, I don't have it</button>
+                </div>
+            </div>
+
+            <div id="epic-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_epicInfo()">← Back</button>
+                <p id="t-epicInfo">Don't worry! You can apply for a new Voter ID by filling out Form 6 online at voters.eci.gov.in or by visiting your local BLO.</p>
+                <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
+                    <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
+                    <p style="font-size: 0.9rem; color: #555;">Form 6 will ask for your Assembly Constituency (AC) and Tehsil. Use the map below or search the ECI portal — select your State and District to auto-filter the correct Constituencies.</p>
+                    <!-- Google Maps embed: search for ECI offices near user -->
+                    <iframe
+                        title="Find ECI Voter Registration Office Near You"
+                        src="https://maps.google.com/maps?q=Election+Commission+voter+registration+office+India&output=embed&z=5"
+                        width="100%" height="220" style="border:0; border-radius:8px; margin: 10px 0;"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        aria-label="Google Map showing Election Commission offices across India">
+                    </iframe>
+                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 4px;">🔍 Find My Constituency on ECI Portal</button>
+                </div>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-epic">Next Step ➔</button>
+            </div>
+
+            <div id="roll-q2" class="question-card hidden">
+                <button class="btn-back" onclick="app.goBack_rollQ2()">← Back</button>
+                <h3 id="t-rollQuestion">Is your name on the Electoral Roll (Voter List)?</h3>
+                <div class="btn-group" style="flex-direction: column;">
+                    <button class="btn-secondary giant-btn" onclick="app.answerRoll('yes')" id="t-yesRoll">Yes, it is</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerRoll('unknown')" id="t-dontKnowRoll">I don't know / How to check?</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerRoll('no')" id="t-noRoll">No, it's missing</button>
+                </div>
+            </div>
+
+            <div id="roll-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_rollInfo()">← Back</button>
+                <h3 id="t-searchRollTitle">🔍 Find Your Name (Smart Search)</h3>
+                <p id="t-searchRollDesc">The official ECI portal is highly secure. To check your name without errors, click the button below. It will open the official portal.</p>
+                <div class="process-box" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #ccc;">
+                    <strong>Before you click, keep this ready:</strong><br>
+                    1. Your <strong>EPIC Number</strong> (found on your Voter ID card).<br>
+                    2. Or your exact Personal Details (Name, Age, State, District).
+                </div>
+                <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
+                    <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
+                    <p style="font-size: 0.9rem; color: #555;">Don't know your Assembly Constituency (AC) or Tehsil? Use the map below or visit the ECI portal — select your State and District and the system will auto-filter the correct Constituencies.</p>
+                    <iframe
+                        title="Find ECI Voter Search Portal Near You"
+                        src="https://maps.google.com/maps?q=Electoral+Registration+Officer+India&output=embed&z=5"
+                        width="100%" height="200" style="border:0; border-radius:8px; margin: 10px 0;"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        aria-label="Google Map showing Electoral Registration Officers across India">
+                    </iframe>
+                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 4px;">🔍 Find My Constituency on ECI Portal</button>
+                </div>
+                <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
+                    <a href="https://electoralsearch.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-searchBtn">🔗 Open ECI Official Search</a>
+                </div>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-roll">Next Step ➔</button>
+            </div>
+
+            <div id="shift-q3" class="question-card hidden">
+                <button class="btn-back" onclick="app.goBack_shiftQ3()">← Back</button>
+                <h3 id="t-shiftQuestion">Did you recently shift your house to a new city or state?</h3>
+                <div class="btn-group">
+                    <button class="btn-secondary giant-btn" onclick="app.answerShift('yes')" id="t-yesShift">Yes, I shifted</button>
+                    <button class="btn-secondary giant-btn" onclick="app.answerShift('no')" id="t-noShift">No, same house</button>
+                </div>
+            </div>
+
+            <div id="form8-info" class="info-card hidden alert-box-warning">
+                <button class="btn-back" onclick="app.goBack_form8()">← Back</button>
+                <h3 id="t-form8Title">⚠️ You need Form 8!</h3>
+                <p id="t-form8Desc">When you move houses, your Voter ID does NOT update automatically. You must fill out <strong>Form 8</strong> for 'Shifting of Residence'.<br><br><strong>Did you know?</strong> Form 8 is a multi-purpose form! It is also the official form used for <strong>Corrections</strong> (fixing a misspelled name or wrong age) and requesting a <strong>Replacement Voter ID</strong> if yours is lost.</p>
+                <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
+                    <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-formLinkOnline">💻 Apply Online (Requires Login)</a>
+                    <a href="https://eci.gov.in/forms/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; padding: 0.8rem;" id="t-formLinkPdf">📄 Download Form 8 PDF (To give to BLO)</a>
+                </div>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-form8">Next Step ➔</button>
+            </div>
+
+            <div id="form6-info" class="info-card hidden alert-box-warning">
+                <button class="btn-back" onclick="app.goBack_form6()">← Back</button>
+                <h3 id="t-form6Title">⚠️ You need Form 6!</h3>
+                <p id="t-form6Desc">If you haven't moved but your name is missing, it might have been deleted by mistake or you never registered. You need to apply as a new voter using <strong>Form 6</strong>.<br><br><em>🌍 Are you an NRI (Overseas Citizen)?</em> You must use <strong>Form 6A</strong> instead to register.</p>
+                
+                <div class="helper-block" style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px solid #b3d4ff;">
+                    <h4 style="color: var(--primary-color); margin-top: 0;">📍 Constituency & Tehsil Helper</h4>
+                    <p style="font-size: 0.9rem; color: #555;">Form 6 will ask for your Assembly Constituency (AC) and Tehsil. Use the map or ECI portal — select your State and District and the dropdown will auto-filter the correct Constituency for you.</p>
+                    <iframe
+                        title="Find Your Assembly Constituency Office"
+                        src="https://maps.google.com/maps?q=Voter+Helpline+Election+Commission+India&output=embed&z=5"
+                        width="100%" height="200" style="border:0; border-radius:8px; margin: 10px 0;"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        aria-label="Google Map showing Voter Helpline centres across India">
+                    </iframe>
+                    <button class="btn-primary" onclick="app.findConstituency()" style="width: 100%; margin-top: 4px;">🔍 Find My Constituency on ECI Portal</button>
+                </div>
+
+                <div class="btn-group" style="margin-bottom: 20px; flex-direction: column; gap: 10px;">
+                    <a href="https://voters.eci.gov.in/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center;" id="t-formLinkOnline">💻 Apply Online (Requires Login)</a>
+                    <a href="https://eci.gov.in/forms/" target="_blank" class="btn-secondary" style="text-align: center; text-decoration: none; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; padding: 0.8rem;" id="t-formLinkPdf">📄 Download Form 6 PDF (To give to BLO)</a>
+                </div>
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-form6">Next Step ➔</button>
+            </div>
+
+            <div id="voter-slip-info" class="info-card hidden alert-box">
+                <button class="btn-back" onclick="app.goBack_voterSlip()">← Back</button>
+                <p id="t-voterSlipInfo">Awesome! Now you just need your Voter Slip. You can download the Voter Helpline App or ask your local BLO to get it before election day.</p>
+                
+                <div class="helper-block" style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border: 2px solid #28a745;">
+                    <h4 style="color: #28a745; margin-top: 0;">✅ Have you linked your Aadhaar? (Form 6B)</h4>
+                    <p style="font-size: 0.95rem; color: #333;">To remove duplicate voters and ensure a clean electoral roll, the ECI encourages linking your Aadhaar with your Voter ID using <strong>Form 6B</strong>. You can do this easily via the Voter Helpline App!</p>
+                </div>
+
+                <button class="btn-primary" onclick="app.goToScreen('screen-evm')" id="t-nextStep-voterSlip">Next Step ➔</button>
+            </div>
+        </section>
+
+        <!-- Screen 3: Mock EVM -->
+        <section id="screen-evm" class="screen">
+            <h2 id="t-step3Title" class="step-title">Step 3: Inside the Polling Booth</h2>
+            <button class="btn-back" onclick="app.goToScreen('screen-voter-slip')">← Back</button>
+            <p id="t-mockEvmDesc" class="instruction-text">Let's practice! This is what the EVM (Electronic Voting Machine) looks like. Press the blue button next to your chosen candidate.</p>
+            
+            <div class="evm-machine">
+                <div class="evm-row">
+                    <div class="candidate-name" id="t-candidate1">Candidate A (Symbol: ☀️)</div>
+                    <div class="evm-light" id="light-1"></div>
+                    <button class="evm-btn" onclick="app.pressEVM(1)" aria-label="Vote for Candidate A">🔵</button>
+                </div>
+                <div class="evm-row">
+                    <div class="candidate-name" id="t-candidate2">Candidate B (Symbol: 🌲)</div>
+                    <div class="evm-light" id="light-2"></div>
+                    <button class="evm-btn" onclick="app.pressEVM(2)" aria-label="Vote for Candidate B">🔵</button>
+                </div>
+                <div class="evm-row">
+                    <div class="candidate-name" id="t-candidate3">Candidate C (Symbol: 🚗)</div>
+                    <div class="evm-light" id="light-3"></div>
+                    <button class="evm-btn" onclick="app.pressEVM(3)" aria-label="Vote for Candidate C">🔵</button>
+                </div>
+            </div>
+
+            <div id="vvpat-screen" class="vvpat-box hidden">
+                <p id="t-vvpatBeep">BEEP! 📜 VVPAT is printing your slip. Your vote is recorded!</p>
+                <div id="vvpat-slip" class="vvpat-slip"></div>
+            </div>
+
+            <button class="btn-primary mt-4" onclick="app.goToScreen('screen-smart-bites')" id="t-nextStep-evm">Next Step ➔</button>
+        </section>
+
+        <!-- Screen 4: Education Hub -->
+        <section id="screen-smart-bites" class="screen">
+            <h2 id="t-smartBitesTitle" class="step-title">🧠 Complete Education Hub</h2>
+            
+            <div class="education-accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">At the Booth: What to do? ▼</button>
+                    <div class="accordion-content">
+                        <p>1. <strong>Verification:</strong> Show your Voter ID/Slip to the Polling Officer.</p>
+                        <p>2. <strong>Inking:</strong> The Second Officer marks your left forefinger with indelible ink.</p>
+                        <p>3. <strong>Signature:</strong> You sign the register.</p>
+                        <p>4. <strong>Voting:</strong> Proceed to the EVM compartment, press the blue button next to your candidate, and listen for the BEEP. Check the VVPAT slip through the glass window!</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">Do's and Don'ts ▼</button>
+                    <div class="accordion-content">
+                        <p>✅ <strong>DO:</strong> Carry an original valid ID card (Voter ID, Aadhaar, PAN).</p>
+                        <p>✅ <strong>DO:</strong> Check your name on the voter list beforehand.</p>
+                        <p>❌ <strong>DON'T:</strong> Bring mobile phones, cameras, or smartwatches inside the voting compartment.</p>
+                        <p>❌ <strong>DON'T:</strong> Wear clothing with political party symbols.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">Security & Reassurance ▼</button>
+                    <div class="accordion-content">
+                        <p><strong>Are EVMs Safe?</strong> Yes! EVMs are standalone machines, like calculators. They are not connected to the internet, Wi-Fi, or Bluetooth, making them impossible to hack remotely.</p>
+                        <p><strong>Is it safe to vote?</strong> Yes! Central Armed Police Forces (CRPF) are deployed at sensitive booths to prevent any intimidation. Your vote is 100% secret.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">Lost your Voter ID? ▼</button>
+                    <div class="accordion-content">
+                        <p>Don't panic! As long as your name is on the Electoral Roll, you can still vote. You can show any of these alternative documents to the polling officer:</p>
+                        <ul style="margin: 5px 0; padding-left: 20px;">
+                            <li>Aadhaar Card</li>
+                            <li>PAN Card</li>
+                            <li>Driving License</li>
+                            <li>Indian Passport</li>
+                            <li>MNREGA Job Card</li>
+                        </ul>
+                        <p>If you need a new physical Voter ID card, simply fill out <strong>Form 8</strong> for a replacement.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <button class="accordion-header" onclick="app.toggleAccordion(this)">The Power of Your Vote ▼</button>
+                    <div class="accordion-content">
+                        <p>Every single vote counts. By voting, you choose the leaders who make decisions about your roads, schools, hospitals, and taxes. Not voting means letting others make these crucial decisions for you!</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-primary giant-btn mt-4" onclick="app.goToScreen('screen-quiz')" id="t-takeQuiz">Take the Quiz! ➔</button>
+        </section>
+
+        <!-- Screen 5: Gamified Quiz -->
+        <section id="screen-quiz" class="screen">
+            <h2 id="t-quizTitle" class="step-title">🏆 Test Your Knowledge</h2>
+            
+            <div id="quiz-container" class="info-card" style="background: white;">
+                <p id="quiz-question" style="font-size: 1.25rem; font-weight: bold; margin-bottom: 20px;">Question 1: Can you wear a political party t-shirt inside the polling booth?</p>
+                
+                <div class="btn-group" style="flex-direction: column; gap: 10px;" id="quiz-options">
+                    <!-- Options injected via JS -->
+                </div>
+            </div>
+
+            <div id="quiz-result" class="info-card hidden alert-box" style="text-align: center;">
+                <h3 style="font-size: 2rem; margin: 0;">🎉</h3>
+                <h3 style="color: #28a745;">Congratulations!</h3>
+                <p>You scored <span id="quiz-score">0</span>/3. You have earned the <strong>Smart Voter Badge!</strong></p>
+                <div class="badge-icon" style="font-size: 4rem; margin: 20px 0; animation: pulse 2s infinite;">🏅</div>
+                <button class="btn-secondary giant-btn mt-4" onclick="app.goToScreen('screen-welcome')" id="t-restart-quiz">Restart Journey</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Chat Overlay (Assistant) -->
+    <button id="chat-fab" onclick="app.toggleChat()" aria-label="Open Assistant Chat">
+        💬 <span id="t-askQuestion">Ask a Question</span>
+    </button>
+
+    <div id="chat-window" class="chat-window hidden">
+        <div class="chat-header">
+            <h3 id="t-chatTitle">Assistant Chat</h3>
+            <button onclick="app.toggleChat()" id="t-closeChat">✖</button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <div class="chat-bubble bot">Hello! Ask me anything about elections.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Type here..." aria-label="Type message">
+            <button onclick="app.sendMessage()" id="t-send">Send</button>
+        </div>
+    </div>
+
+    <!-- Load Scripts -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element');
+        }
+
+        // Bridge window._firebaseLogEvent → app.logEvent (loaded after Firebase module)
+        window.__analyticsReady = function(eventName, params) {
+            if (window._firebaseAnalytics && window._firebaseLogEvent) {
+                window._firebaseLogEvent(window._firebaseAnalytics, eventName, params || {});
+            }
+        };
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.error(err));
+        }
+    </script>
+</body>
+</html>
