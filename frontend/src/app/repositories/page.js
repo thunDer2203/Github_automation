@@ -17,10 +17,10 @@ export default function RepositoriesPage() {
     async function loadData() {
         try {
             const [githubRes, connectedRes] = await Promise.all([
-                fetch("http://localhost:5000/github/repos", {
+                fetch(`${process.env.BACKEND_URL}/github/repos`, {
                     credentials: "include",
                 }),
-                fetch("http://localhost:5000/repos", {
+                fetch(`${process.env.BACKEND_URL}/repos`, {
                     credentials: "include",
                 }),
             ]);
@@ -44,7 +44,7 @@ export default function RepositoriesPage() {
 
     async function connectRepository(repo) {
         try {
-            const res = await fetch("http://localhost:5000/repos", {
+            const res = await fetch(`${process.env.BACKEND_URL}/repos`, {
                 method: "POST",
                 credentials: "include",
                 headers: {

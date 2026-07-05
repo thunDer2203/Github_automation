@@ -37,7 +37,7 @@ export default function DashboardPage() {
 
     async function fetchStats() {
         const res = await fetch(
-            "http://localhost:5000/dashboard/stats",
+            `${process.env.BACKEND_URL}/dashboard/stats`,
             {
                 credentials: "include",
             }
@@ -49,7 +49,7 @@ export default function DashboardPage() {
 
     async function fetchRepositories() {
         const res = await fetch(
-            "http://localhost:5000/repos",
+            `${process.env.BACKEND_URL}/repos`,
             {
                 credentials: "include",
             }
@@ -69,7 +69,7 @@ export default function DashboardPage() {
         if (success) params.append("success", success);
 
         const res = await fetch(
-            `http://localhost:5000/dashboard?${params.toString()}`,
+            `${process.env.BACKEND_URL}/dashboard?${params.toString()}`,
             {
                 credentials: "include",
             }
