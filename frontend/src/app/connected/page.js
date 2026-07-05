@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import RepositoryCard from "./components/RepositoryCard";
 
 export default function ConnectedRepositoriesPage() {
     const [repos, setRepos] = useState([]);
@@ -10,26 +11,19 @@ export default function ConnectedRepositoriesPage() {
     }, []);
 
     async function fetchRepositories() {
-        const res = await fetch(
-            "http://localhost:5000/repos",
-            {
-                credentials: "include",
-            }
-        );
+        const res = await fetch("http://localhost:5000/repos", {
+            credentials: "include",
+        });
 
         const data = await res.json();
-
         setRepos(data);
     }
 
     async function disconnectRepository(id) {
-        const res = await fetch(
-            `http://localhost:5000/repos/${id}`,
-            {
-                method: "DELETE",
-                credentials: "include",
-            }
-        );
+        const res = await fetch(`http://localhost:5000/repos/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
 
         if (res.ok) {
             fetchRepositories();
@@ -46,35 +40,13 @@ export default function ConnectedRepositoriesPage() {
                 <h2>No repositories connected.</h2>
             )}
 
-            <div className="grid gap-5">
+            <div className="space-y-6">
                 {repos.map((repo) => (
-                    <div
+                    <RepositoryCard
                         key={repo.id}
-                        className="bg-white shadow rounded-xl p-6 flex justify-between items-center"
-                    >
-                        <div>
-                            <h2 className="text-xl font-semibold">
-                                {repo.name}
-                            </h2>
-
-                            <p className="text-gray-500">
-                                {repo.fullName}
-                            </p>
-
-                            <p className="text-sm mt-2">
-                                {repo.private ? "Private" : "Public"}
-                            </p>
-                        </div>
-
-                        <button
-                            onClick={() =>
-                                disconnectRepository(repo.id)
-                            }
-                            className="bg-red-500 text-white px-5 py-2 rounded-lg"
-                        >
-                            Disconnect
-                        </button>
-                    </div>
+                        repo={repo}
+                        onDisconnect={disconnectRepository}
+                    />
                 ))}
             </div>
         </main>

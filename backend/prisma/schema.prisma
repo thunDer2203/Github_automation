@@ -7,6 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TriggerEvent {
+  ISSUE_OPENED
+  ISSUE_CLOSED
+  ISSUE_REOPENED
+
+  PR_OPENED
+  PR_MERGED
+  PR_CLOSED
+
+  PUSH
+}
+
+enum ActionType {
+  ADD_LABEL
+  COMMENT
+  SLACK
+}
+
 model User {
   id           String       @id @default(cuid())
   githubId     String       @unique
@@ -19,15 +37,53 @@ model User {
 }
 
 model Repository {
+  id              String   @id @default(cuid())
+
+  githubRepoId    String   @unique
+  name            String
+  fullName        String
+  owner           String
+
+  webhookId       Int?
+
+  private         Boolean
+  defaultBranch   String
+
+  userId          String
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  automations     AutomationRule[]
+
+  createdAt       DateTime @default(now())
+}
+
+model AutomationRule {
   id            String   @id @default(cuid())
-  githubRepoId  String   @unique
+
   name          String
-  fullName      String
-  owner         String
-  webhookId     Int?
-  private       Boolean
-  defaultBranch String
-  userId        String
+
+  repositoryId  String
+  repository    Repository @relation(fields: [repositoryId], references: [id], onDelete: Cascade)
+
+  trigger       TriggerEvent
+
+  enabled       Boolean @default(true)
+
+  actions       AutomationAction[]
+
   createdAt     DateTime @default(now())
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+model AutomationAction {
+  id          String @id @default(cuid())
+
+  ruleId      String
+  rule        AutomationRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  type        ActionType
+
+  value       String?
+
+  createdAt   DateTime @default(now())
 }
