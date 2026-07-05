@@ -10,7 +10,7 @@ export const githubCallback = (req, res) => {
 };
 
 export const me = (req, res) => {
-    console.log("req.user:", req.user); // Log the user object for debugging
+    // console.log("req.user:", req.user); // Log the user object for debugging
     if (!req.user) {
         return res.status(401).json({
             message: "Unauthorized",
