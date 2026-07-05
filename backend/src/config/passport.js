@@ -8,7 +8,7 @@ passport.use(
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
             callbackURL:
-                "http://localhost:5000/auth/github/callback",
+                `${process.env.YOUR_PUBLIC_URL}/auth/github/callback`,
         },
 
         async (accessToken, refreshToken, profile, done) => {
