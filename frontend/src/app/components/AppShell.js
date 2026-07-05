@@ -9,61 +9,75 @@ export default function AppShell({ title, description, actions, children }) {
             <style>{`
                 @keyframes driftOne {
                     0%   { transform: translate(-10%, -10%) scale(1); }
-                    50%  { transform: translate(8%, 12%) scale(1.15); }
+                    50%  { transform: translate(15%, 20%) scale(1.3); }
                     100% { transform: translate(-10%, -10%) scale(1); }
                 }
                 @keyframes driftTwo {
                     0%   { transform: translate(10%, 15%) scale(1); }
-                    50%  { transform: translate(-12%, -8%) scale(1.1); }
+                    50%  { transform: translate(-18%, -12%) scale(1.25); }
                     100% { transform: translate(10%, 15%) scale(1); }
                 }
-                .ambient-blob-one {
-                    animation: driftOne 32s ease-in-out infinite;
+                @keyframes driftThree {
+                    0%   { transform: translate(0%, 0%) scale(1); }
+                    50%  { transform: translate(10%, -15%) scale(1.2); }
+                    100% { transform: translate(0%, 0%) scale(1); }
                 }
-                .ambient-blob-two {
-                    animation: driftTwo 38s ease-in-out infinite;
-                }
+                .ambient-blob-one { animation: driftOne 26s ease-in-out infinite; }
+                .ambient-blob-two { animation: driftTwo 32s ease-in-out infinite; }
+                .ambient-blob-three { animation: driftThree 22s ease-in-out infinite; }
                 @media (prefers-reduced-motion: reduce) {
-                    .ambient-blob-one, .ambient-blob-two {
+                    .ambient-blob-one, .ambient-blob-two, .ambient-blob-three {
                         animation: none !important;
                     }
                 }
             `}</style>
 
-            {/* Ambient background layer */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Ambient background layer — fixed so it always sits behind content */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
                 <div
                     className="ambient-blob-one absolute rounded-full"
                     style={{
-                        width: 560,
-                        height: 560,
-                        top: "-8%",
-                        left: "10%",
-                        background: "radial-gradient(circle, rgba(124,111,224,0.07), transparent 70%)",
-                        filter: "blur(60px)",
+                        width: 700,
+                        height: 700,
+                        top: "-10%",
+                        left: "5%",
+                        background: "radial-gradient(circle, rgba(124,111,224,0.22), transparent 70%)",
+                        filter: "blur(80px)",
                     }}
                 />
                 <div
                     className="ambient-blob-two absolute rounded-full"
                     style={{
-                        width: 480,
-                        height: 480,
-                        bottom: "-10%",
-                        right: "8%",
-                        background: "radial-gradient(circle, rgba(95,191,143,0.06), transparent 70%)",
-                        filter: "blur(60px)",
+                        width: 620,
+                        height: 620,
+                        bottom: "-15%",
+                        right: "0%",
+                        background: "radial-gradient(circle, rgba(95,191,143,0.18), transparent 70%)",
+                        filter: "blur(80px)",
+                    }}
+                />
+                <div
+                    className="ambient-blob-three absolute rounded-full"
+                    style={{
+                        width: 500,
+                        height: 500,
+                        top: "35%",
+                        left: "45%",
+                        background: "radial-gradient(circle, rgba(227,168,87,0.10), transparent 70%)",
+                        filter: "blur(90px)",
                     }}
                 />
             </div>
 
-            <div className="relative z-10 flex w-full">
+            <div className="relative flex w-full" style={{ zIndex: 1 }}>
                 <Sidebar />
 
                 <div className="flex-1 flex flex-col min-w-0">
                     <header
-                        className="sticky top-0 z-10 backdrop-blur px-6 md:px-10 py-5 flex items-center justify-between gap-4"
+                        className="sticky top-0 backdrop-blur px-6 md:px-10 py-5 flex items-center justify-between gap-4"
                         style={{
-                            backgroundColor: "rgba(10,12,18,0.85)",
+                            zIndex: 2,
+                            backgroundColor: "rgba(10,12,18,0.75)",
                             borderBottom: "1px solid #1A1D28",
                         }}
                     >
