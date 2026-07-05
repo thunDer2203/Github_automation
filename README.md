@@ -6,6 +6,14 @@ The project is built using **Next.js**, **Express.js**, **Prisma**, **PostgreSQL
 
 ---
 
+## Live Demo
+
+Frontend:
+https://github-automation-tan.vercel.app/
+
+Backend:
+https://github-automation-anrl.onrender.com
+
 # Features
 
 ## Authentication
@@ -600,6 +608,13 @@ bug: testing automation
 - Comment posted
 - Slack notification (if configured)
 - Dashboard updated
+
+
+For convenience, a public demo repository is available:
+
+https://github.com/thunDer2203/github_automation_demo
+
+Reviewers may fork this repository and connect it to the application for testing.
 
 ---
 
