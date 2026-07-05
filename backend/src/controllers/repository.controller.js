@@ -1,5 +1,7 @@
 import prisma from "../lib/prisma.js";
 import { getGitHubClient } from "../services/github.services.js";
+import { addDashboardEvent } from "../services/dashboard.services.js";
+import { deleteWebhook } from "../services/github.services.js";
 
 export const getRepositories = async (req, res) => {
     try {
@@ -88,6 +90,14 @@ export const connectRepository = async (req, res) => {
         webhookId: webhook.data.id,
     },
 });
+
+await addDashboardEvent({
+    userId: req.user.id,
+    repositoryId: repository.id,
+    type: "REPOSITORY_CONNECTED",
+    title: "Repository connected",
+    description: repository.fullName,
+});
         res.status(201).json(repository);
     } catch (err) {
         console.error(err);
@@ -119,13 +129,36 @@ export const disconnectRepository = async (req, res) => {
                 message: "Forbidden",
             });
         }
+const user = await prisma.user.findUnique({
+    where: {
+        id: req.user.id,
+    },
+});
 
+if (repository.webhookId) {
+    try {
+        await deleteWebhook({
+            accessToken: user.accessToken,
+            owner: repository.owner,
+            repo: repository.name,
+            hookId: repository.webhookId,
+        });
+    } catch (err) {
+        console.error("Failed to delete GitHub webhook:", err.message);
+    }
+}
         await prisma.repository.delete({
             where: {
                 id,
             },
         });
-
+        
+        await addDashboardEvent({
+    userId: req.user.id,
+    type: "REPOSITORY_DISCONNECTED",
+    title: "Repository disconnected",
+    description: repository.fullName,
+});
         res.json({
             message: "Repository disconnected",
         });

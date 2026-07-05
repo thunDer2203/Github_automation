@@ -1,50 +1,59 @@
-import prisma from "../lib/prisma.js";
-import { executeAction } from "./actionExecutor.js";
+    import prisma from "../lib/prisma.js";
+    import { executeAction } from "./actionExecutor.js";
+    import { checkConditions } from "./condition.service.js";
 
-export async function processWebhook(payload) {
+    export async function processWebhook(trigger, payload) {
 
-    if (payload.action !== "opened") {
-        return;
-    }
+        const resource =payload.issue || payload.pull_request;
 
-    const repository = await prisma.repository.findUnique({
-        where: {
-            githubRepoId: payload.repository.id.toString(),
-        },
-    });
 
-    if (!repository) {
-        console.log("Repository not connected");
-        return;
-    }
+        const repository = await prisma.repository.findUnique({
+            where: {
+                githubRepoId: payload.repository.id.toString(),
+            },
+        });
 
-    const user = await prisma.user.findUnique({
-        where: {
-            id: repository.userId,
-        },
-    });
+        if (!repository) {
+            console.log("Repository not connected");
+            return;
+        }
 
-    const rules = await prisma.automationRule.findMany({
-        where: {
-            repositoryId: repository.id,
-            trigger: "ISSUE_OPENED",
-            enabled: true,
-        },
-        include: {
-            actions: true,
-        },
-    });
+        const user = await prisma.user.findUnique({
+            where: {
+                id: repository.userId,
+            },
+        });
 
-    for (const rule of rules) {
-        for (const action of rule.actions) {
-            await executeAction({
-                action,
-                accessToken: user.accessToken,
-                owner: payload.repository.owner.login,
-                repo: payload.repository.name,
-                issueNumber: payload.issue.number,
-            });
+        const rules = await prisma.automationRule.findMany({
+            where: {
+                repositoryId: repository.id,
+                trigger:trigger,
+                enabled: true,
+            },
+            include: {
+                actions: true,
+                conditions: true,
+            },
+        });
+
+        for (const rule of rules) {
+            const passed = checkConditions(
+        rule.conditions,
+        payload
+    );
+
+    if (!passed) continue;
+            for (const action of rule.actions) {
+                await executeAction({
+                    action,
+                    accessToken: user.accessToken,
+                    owner: payload.repository.owner.login,
+                    repo: payload.repository.name,
+                    issueNumber: resource.number,
+                    userId: user.id,
+                    repositoryId: repository.id,
+                });
+            }
         }
     }
-}
 

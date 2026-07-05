@@ -42,3 +42,18 @@ export async function createIssueLabel({
         labels,
     });
 }
+
+export async function deleteWebhook({
+    accessToken,
+    owner,
+    repo,
+    hookId,
+}) {
+    const github = getGitHubClient(accessToken);
+
+    await github.rest.repos.deleteWebhook({
+        owner,
+        repo,
+        hook_id: hookId,
+    });
+}

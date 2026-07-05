@@ -15,11 +15,26 @@ export const githubWebhook = async (req, res) => {
     // console.log("========== WEBHOOK ==========");
 
     // console.log(req.headers["x-github-event"]);
+    let event = req.headers["x-github-event"];
+    const payload = req.body;
+
 
     // console.log(req.body);
-     await processWebhook(req.body);
+     let trigger = null;
 
+if (event === "issues" && payload.action === "opened") {
+    trigger = "ISSUE_OPENED";
+}
 
-    res.sendStatus(200);
+if (event === "pull_request" && payload.action === "opened") {
+    trigger = "PR_OPENED";
+}
+
+if (trigger) {
+    await processWebhook(trigger, payload);
+}
+
+res.sendStatus(200);
+
 
 };

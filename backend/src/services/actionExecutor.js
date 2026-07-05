@@ -1,5 +1,6 @@
 import { createIssueLabel,createIssueComment } from "./github.services.js";
 import { sendSlackMessage } from "./slack.services.js";
+import { addDashboardEvent } from "./dashboard.services.js";
 
 export async function executeAction({
     action,
@@ -7,6 +8,8 @@ export async function executeAction({
     owner,
     repo,
     issueNumber,
+    userId,
+    repositoryId,
 }) {
     switch (action.type) {
         case "ADD_LABEL":
@@ -17,6 +20,13 @@ export async function executeAction({
                 issueNumber,
                 labels: [action.value],
             });
+            await addDashboardEvent({
+    userId,
+    repositoryId,
+    type: "LABEL_ADDED",
+    title: `Added label "${action.value}"`,
+    description: `${owner}/${repo} Issue #${issueNumber}`,
+});
             break;
             case "COMMENT":
 
@@ -27,7 +37,13 @@ export async function executeAction({
                 issueNumber,
                 body: action.value,
             });
-
+            await addDashboardEvent({
+    userId,
+    repositoryId,
+    type: "COMMENT_ADDED",
+    title: "Comment posted",
+    description: `${owner}/${repo} Issue #${issueNumber}`,
+});
             break;
             case "SLACK":
 
@@ -35,7 +51,13 @@ export async function executeAction({
         webhookUrl: action.value,
         message: `New issue opened in ${owner}/${repo}\nIssue: #${issueNumber}`,
     });
-
+    await addDashboardEvent({
+    userId,
+    repositoryId,
+    type: "SLACK_SENT",
+    title: "Slack notification sent",
+    description: `${owner}/${repo}`,
+});
     break;
         default:
             console.log("Unknown action:", action.type);

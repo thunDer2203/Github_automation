@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import useAuth from "../hooks/useAuth";
 
 export default function RepositoriesPage() {
+    useAuth();
     const [repos, setRepos] = useState([]);
     const [connectedRepos, setConnectedRepos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -25,8 +27,13 @@ export default function RepositoriesPage() {
             const githubRepos = await githubRes.json();
             const connected = await connectedRes.json();
 
-            setRepos(githubRepos);
-            setConnectedRepos(connected);
+            setRepos(
+    Array.isArray(githubRepos) ? githubRepos : []
+);
+
+setConnectedRepos(
+    Array.isArray(connected) ? connected : []
+);
         } catch (err) {
             console.error(err);
         } finally {

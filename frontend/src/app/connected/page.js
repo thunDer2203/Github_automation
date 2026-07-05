@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import RepositoryCard from "./components/RepositoryCard";
+import useAuth from "../hooks/useAuth";
 
 export default function ConnectedRepositoriesPage() {
+    useAuth();
     const [repos, setRepos] = useState([]);
 
     useEffect(() => {
@@ -16,7 +18,7 @@ export default function ConnectedRepositoriesPage() {
         });
 
         const data = await res.json();
-        setRepos(data);
+        setRepos(Array.isArray(data) ? data : []);
     }
 
     async function disconnectRepository(id) {

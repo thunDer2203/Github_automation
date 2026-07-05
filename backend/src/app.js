@@ -7,6 +7,7 @@ import gitHubRoutes from "./routes/github.routes.js";
 import repoRoutes from "./routes/repo.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
 import ruleRoutes from "./routes/rule.route.js";
+import dashboardRoutes from "./routes/dashboard.route.js";
 
 import "./config/passport.js";
 
@@ -44,6 +45,7 @@ app.use("/github",gitHubRoutes);
 app.use("/repos", repoRoutes);
 app.use("/webhooks", webhookRoutes);
 app.use("/rules", ruleRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 app.get("/",(req,res)=>{res.send("Hello, World!");});
 

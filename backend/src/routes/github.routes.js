@@ -1,16 +1,17 @@
 import { Router } from "express";
 import passport from "passport";
 import { getGitHubClient } from "../services/github.services.js";
+import { isAuthenticated } from "../middleware/isAuth.js";
 
 const router = Router();
 
-router.get("/me", async (req, res) => {
+router.get("/me", isAuthenticated, async (req, res) => {
     const octokit = getGitHubClient(req.user.accessToken);
     const{data}= await octokit.users.getAuthenticated();
     console.log(data);
 })
 
-router.get("/repos", async (req, res) => {
+router.get("/repos", isAuthenticated, async (req, res) => {
     try{
     const octokit = getGitHubClient(req.user.accessToken);
     const{data}= await octokit.repos.listForAuthenticatedUser({

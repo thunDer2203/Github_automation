@@ -7,6 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum DashboardEventType {
+  REPOSITORY_CONNECTED
+  REPOSITORY_DISCONNECTED
+
+  RULE_CREATED
+  RULE_UPDATED
+  RULE_DELETED
+
+  LABEL_ADDED
+  COMMENT_ADDED
+  SLACK_SENT
+}
+
 enum TriggerEvent {
   ISSUE_OPENED
   ISSUE_CLOSED
@@ -34,6 +47,7 @@ model User {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   repositories Repository[]
+  dashboardEvents DashboardEvent[]
 }
 
 model Repository {
@@ -53,6 +67,8 @@ model Repository {
   user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   automations     AutomationRule[]
+  dashboardEvents DashboardEvent[]
+
 
   createdAt       DateTime @default(now())
 }
@@ -70,6 +86,7 @@ model AutomationRule {
   enabled       Boolean @default(true)
 
   actions       AutomationAction[]
+  conditions     RuleCondition[]
 
   createdAt     DateTime @default(now())
 }
@@ -86,4 +103,55 @@ model AutomationAction {
   value       String?
 
   createdAt   DateTime @default(now())
+}
+
+
+model DashboardEvent {
+  id            String   @id @default(cuid())
+
+  userId        String
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  repositoryId  String?
+  repository    Repository? @relation(fields: [repositoryId], references: [id], onDelete: SetNull)
+
+  type          DashboardEventType
+
+  title         String
+  description   String?
+
+  metadata       Json?
+
+  success       Boolean @default(true)
+
+  createdAt     DateTime @default(now())
+}
+
+
+enum ConditionField {
+  TITLE
+  BODY
+  AUTHOR
+  LABEL
+}
+
+enum ConditionOperator {
+  CONTAINS
+  EQUALS
+  STARTS_WITH
+  ENDS_WITH
+}
+
+
+model RuleCondition {
+  id String @id @default(cuid())
+
+  ruleId String
+  rule   AutomationRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  field    ConditionField
+  operator ConditionOperator
+  value    String
+
+  createdAt DateTime @default(now())
 }

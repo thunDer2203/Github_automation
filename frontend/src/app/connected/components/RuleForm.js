@@ -15,9 +15,36 @@ export default function RuleForm({
         rule?.trigger || "ISSUE_OPENED"
     );
 
+    const [conditions, setConditions] = useState(
+        rule?.conditions || []
+    );
+
     const [actions, setActions] = useState(
         rule?.actions || []
     );
+
+    function addCondition() {
+        setConditions([
+            ...conditions,
+            {
+                field: "TITLE",
+                operator: "CONTAINS",
+                value: "",
+            },
+        ]);
+    }
+
+    function updateCondition(index, field, value) {
+        const updated = [...conditions];
+        updated[index][field] = value;
+        setConditions(updated);
+    }
+
+    function removeCondition(index) {
+        setConditions(
+            conditions.filter((_, i) => i !== index)
+        );
+    }
 
     function addAction() {
         setActions([
@@ -31,16 +58,21 @@ export default function RuleForm({
 
     function updateAction(index, field, value) {
         const updated = [...actions];
-
         updated[index][field] = value;
-
         setActions(updated);
+    }
+
+    function removeAction(index) {
+        setActions(
+            actions.filter((_, i) => i !== index)
+        );
     }
 
     async function submit() {
         const body = {
             name,
             trigger,
+            conditions,
             actions,
         };
 
@@ -49,7 +81,8 @@ export default function RuleForm({
                 method: "PUT",
                 credentials: "include",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type":
+                        "application/json",
                 },
                 body: JSON.stringify(body),
             });
@@ -60,7 +93,8 @@ export default function RuleForm({
                     method: "POST",
                     credentials: "include",
                     headers: {
-                        "Content-Type": "application/json",
+                        "Content-Type":
+                            "application/json",
                     },
                     body: JSON.stringify(body),
                 }
@@ -83,7 +117,7 @@ export default function RuleForm({
             />
 
             <select
-                className="border p-2 w-full mb-3"
+                className="border p-2 w-full mb-4"
                 value={trigger}
                 onChange={(e) =>
                     setTrigger(e.target.value)
@@ -102,10 +136,116 @@ export default function RuleForm({
                 </option>
             </select>
 
+            <h3 className="font-semibold mb-3">
+                Conditions
+            </h3>
+
+            {conditions.map((condition, index) => (
+                <div
+                    key={index}
+                    className="border rounded p-3 mb-3"
+                >
+                    <div className="flex gap-2 mb-2">
+
+                        <select
+                            value={condition.field}
+                            onChange={(e) =>
+                                updateCondition(
+                                    index,
+                                    "field",
+                                    e.target.value
+                                )
+                            }
+                            className="border p-2"
+                        >
+                            <option value="TITLE">
+                                Title
+                            </option>
+
+                            <option value="BODY">
+                                Body
+                            </option>
+
+                            <option value="AUTHOR">
+                                Author
+                            </option>
+
+                            <option value="LABEL">
+                                Label
+                            </option>
+                        </select>
+
+                        <select
+                            value={
+                                condition.operator
+                            }
+                            onChange={(e) =>
+                                updateCondition(
+                                    index,
+                                    "operator",
+                                    e.target.value
+                                )
+                            }
+                            className="border p-2"
+                        >
+                            <option value="CONTAINS">
+                                Contains
+                            </option>
+
+                            <option value="EQUALS">
+                                Equals
+                            </option>
+
+                            <option value="STARTS_WITH">
+                                Starts With
+                            </option>
+
+                            <option value="ENDS_WITH">
+                                Ends With
+                            </option>
+                        </select>
+
+                    </div>
+
+                    <input
+                        className="border p-2 w-full mb-2"
+                        placeholder="Condition Value"
+                        value={condition.value}
+                        onChange={(e) =>
+                            updateCondition(
+                                index,
+                                "value",
+                                e.target.value
+                            )
+                        }
+                    />
+
+                    <button
+                        onClick={() =>
+                            removeCondition(index)
+                        }
+                        className="text-red-600"
+                    >
+                        Remove Condition
+                    </button>
+                </div>
+            ))}
+
+            <button
+                onClick={addCondition}
+                className="bg-gray-700 text-white px-4 py-2 rounded mb-6"
+            >
+                Add Condition
+            </button>
+
+            <h3 className="font-semibold mb-3">
+                Actions
+            </h3>
+
             {actions.map((action, index) => (
                 <div
                     key={index}
-                    className="border p-3 rounded mb-3"
+                    className="border rounded p-3 mb-3"
                 >
                     <select
                         value={action.type}
@@ -116,6 +256,7 @@ export default function RuleForm({
                                 e.target.value
                             )
                         }
+                        className="border p-2 w-full"
                     >
                         <option value="ADD_LABEL">
                             Add Label
@@ -131,9 +272,9 @@ export default function RuleForm({
                     </select>
 
                     <input
-                        className="border p-2 w-full mt-2"
-                        placeholder="Value"
-                        value={action.value}
+                        className="border p-2 w-full mt-2 mb-2"
+                        placeholder="Action Value"
+                        value={action.value || ""}
                         onChange={(e) =>
                             updateAction(
                                 index,
@@ -142,6 +283,15 @@ export default function RuleForm({
                             )
                         }
                     />
+
+                    <button
+                        onClick={() =>
+                            removeAction(index)
+                        }
+                        className="text-red-600"
+                    >
+                        Remove Action
+                    </button>
                 </div>
             ))}
 
