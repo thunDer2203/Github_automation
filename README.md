@@ -1,100 +1,119 @@
 # GitHub Automation Bot
 
-A full-stack GitHub Automation platform that allows users to connect their GitHub repositories, configure custom automation rules, receive Slack notifications, and monitor all automation events through a dashboard.
+A full-stack GitHub Automation platform that enables users to connect GitHub repositories, create configurable automation rules, automate repository workflows, send AI-powered Slack notifications, and monitor all automation activity through a centralized dashboard.
 
-The application uses GitHub OAuth for authentication, GitHub Webhooks for real-time events, Slack Incoming Webhooks for notifications, Prisma ORM with PostgreSQL (Neon), and Next.js + Express.js for the frontend and backend.
+The project is built using **Next.js**, **Express.js**, **Prisma**, **PostgreSQL (Neon)**, **GitHub OAuth**, **GitHub Webhooks**, **Slack Incoming Webhooks**, and **Google Gemini AI**.
 
 ---
 
-## Features
+# Features
 
-### Authentication
-- GitHub OAuth Login
-- Secure session-based authentication
-- Protected dashboard and repository pages
+## Authentication
 
-### Repository Management
+- GitHub OAuth Authentication
+- Secure Passport.js session-based login
+- Protected frontend pages
+- Protected backend API routes
+- Secure logout with session destruction
+
+---
+
+## Repository Management
+
 - Connect GitHub repositories
 - Disconnect repositories
-- Automatically create GitHub webhooks
-- Automatically remove GitHub webhooks when disconnecting
+- Automatic webhook creation
+- Automatic webhook deletion
+- Multiple repositories per user
 
-### Automation Rules
-Create custom automation rules for every connected repository.
+---
 
-Supported Triggers:
+## Configurable Automation Rules
+
+Create automation rules directly from the UI.
+
+### Supported Triggers
+
 - Issue Opened
 - Pull Request Opened
 
-Supported Conditions:
+### Supported Conditions
+
 - Title contains keyword
 - Description contains keyword
 - Author matches username
 - Label matches
 
-Supported Actions:
+### Supported Actions
+
 - Add GitHub Label
-- Comment on Issue / Pull Request
+- Add GitHub Comment
 - Send Slack Notification
 
-Rules are completely configurable through the UI.
+Rules are completely configurable without changing backend code.
 
 ---
 
-### Slack Integration
+## AI-powered Slack Notifications
 
-Supports Slack Incoming Webhooks.
-
-Whenever a configured automation rule executes, the bot sends an AI-generated Slack notification.
+Instead of sending static Slack messages, the application uses **Google Gemini** to generate human-friendly summaries for GitHub Issues and Pull Requests before sending notifications.
 
 ---
 
-### Dashboard
+## Dashboard
 
-A user-specific dashboard displaying:
+Every automation activity is recorded.
 
-- Repository Connections
-- Rule Creation / Updates / Deletion
-- Incoming GitHub Events
-- Successful Actions
-- Failed Actions
-- Job Retries
-- Job Success History
+Dashboard events include:
 
-Dashboard can also be filtered by repository.
+- Repository Connected
+- Repository Disconnected
+- Rule Created
+- Rule Updated
+- Rule Deleted
+- Label Added
+- Comment Added
+- Slack Notification Sent
+- Job Retry
+- Job Success
+- Job Failure
+
+Dashboard events can be filtered by repository.
 
 ---
 
-### Reliability
+## Reliable Webhook Processing
 
-The application is designed to avoid common webhook problems.
+The application is designed to safely process GitHub webhooks.
 
-Implemented features include:
+Implemented reliability features:
 
 - GitHub webhook signature verification
-- Replay attack protection
-- Duplicate webhook prevention
+- Replay attack prevention
+- Duplicate webhook detection
 - Background job processing
-- Automatic retries for failed jobs
+- Automatic retry mechanism
+- Idempotent action execution
 - Dashboard logging for failures and retries
 
 ---
 
-## Tech Stack
+# Tech Stack
 
-### Frontend
+## Frontend
 
 - Next.js
 - React
 - Tailwind CSS
 
-### Backend
+## Backend
 
 - Express.js
+- Passport.js
 - Prisma ORM
 - PostgreSQL (Neon)
 
-### APIs
+## External Services
 
 - GitHub OAuth
 - GitHub REST API
@@ -107,32 +126,38 @@ Implemented features include:
 # Project Structure
 
 ```
-frontend/
-    app/
-    components/
-
-backend/
-    src/
-        controllers/
-        routes/
-        services/
-        middleware/
-        utils/
-        lib/
-
-    prisma/
+github-automation/
+│
+├── frontend/
+│   ├── app/
+│   ├── components/
+│   └── public/
+│
+├── backend/
+│   ├── prisma/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── utils/
+│   │   └── lib/
+│   └── package.json
+│
+└── README.md
 ```
 
 ---
 
-# Local Setup
+# Running the Project Locally
 
 ## 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/<your-repository>.git
+git clone https://github.com/<your-username>/<repository-name>.git
 
-cd <your-repository>
+cd <repository-name>
 ```
 
 ---
@@ -157,19 +182,19 @@ npm install
 
 ---
 
-## 3. Create a PostgreSQL Database
+# 3. Create a PostgreSQL Database
 
-You can use:
+You may use:
 
 - Neon
 - Supabase
 - Local PostgreSQL
 
-Copy the connection string.
+Copy the PostgreSQL connection string.
 
 ---
 
-## 4. Backend Environment Variables
+# 4. Configure Backend Environment Variables
 
 Create:
 
@@ -177,30 +202,44 @@ Create:
 backend/.env
 ```
 
-Add:
+Add the following:
 
 ```env
-DATABASE_URL=
-
 PORT=5000
+
+DATABASE_URL=
 
 SESSION_SECRET=
 
-CLIENT_URL=http://localhost:3000
+CLIENT_ID=
+CLIENT_SECRET=
 
-GITHUB_CLIENT_ID=
-GITHUB_CLIENT_SECRET=
+YOUR_PUBLIC_URL=
 
-GITHUB_WEBHOOK_SECRET=
+FRONTEND_URL=http://localhost:3000
 
-SLACK_WEBHOOK_URL=
+WEBHOOK_SECRET=
 
 GEMINI_API_KEY=
 ```
 
+### Environment Variable Explanation
+
+| Variable | Description |
+|------------|-------------|
+| PORT | Backend port |
+| DATABASE_URL | PostgreSQL connection string |
+| SESSION_SECRET | Secret used to sign sessions |
+| CLIENT_ID | GitHub OAuth Client ID |
+| CLIENT_SECRET | GitHub OAuth Client Secret |
+| YOUR_PUBLIC_URL | Public backend URL (ngrok during local development) |
+| FRONTEND_URL | Frontend URL |
+| WEBHOOK_SECRET | GitHub webhook secret |
+| GEMINI_API_KEY | Google Gemini API Key |
+
 ---
 
-## 5. Frontend Environment Variables
+# 5. Configure Frontend Environment Variables
 
 Create:
 
@@ -208,21 +247,25 @@ Create:
 frontend/.env.local
 ```
 
+Add:
+
 ```env
-NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
+NEXT_PUBLIC_API_URL=http://localhost:5000
 ```
 
 ---
 
-## 6. Run Prisma
+# 6. Generate Prisma Client
 
-Generate the Prisma Client
+Inside the backend:
 
 ```bash
 npx prisma generate
 ```
 
-Push the schema
+---
+
+# 7. Push Database Schema
 
 ```bash
 npx prisma db push
@@ -230,80 +273,122 @@ npx prisma db push
 
 (Optional)
 
+Open Prisma Studio:
+
 ```bash
 npx prisma studio
 ```
 
 ---
 
-## 7. Create a GitHub OAuth App
+# 8. Create a GitHub OAuth App
 
-Create a GitHub OAuth App.
+Go to:
 
-Homepage URL
+https://github.com/settings/developers
+
+Create a new OAuth App.
+
+Use:
+
+### Homepage URL
 
 ```
 http://localhost:3000
 ```
 
-Authorization Callback URL
+### Authorization Callback URL
 
 ```
-http://localhost:5000/auth/github/callback
+https://<your-ngrok-domain>.ngrok-free.app/auth/github/callback
 ```
 
-Copy:
+Copy the generated:
 
 - Client ID
 - Client Secret
 
-into `.env`.
+into your backend `.env`.
 
 ---
 
-## 8. Generate a Webhook Secret
+# 9. Expose Your Backend
+
+GitHub Webhooks require a public URL.
+
+Run:
+
+```bash
+ngrok http 5000
+```
+
+Example:
+
+```
+https://abc123.ngrok-free.app
+```
+
+Copy this URL.
+
+Update:
+
+```
+YOUR_PUBLIC_URL
+```
+
+inside `.env`.
+
+Restart the backend.
+
+---
+
+# 10. Generate a GitHub Webhook Secret
 
 Generate any random string.
 
-Example
+Example:
 
 ```
-my-secret-webhook-key
+my-super-secret-key
 ```
 
-Store it as
+Store it as:
 
 ```
-GITHUB_WEBHOOK_SECRET
+WEBHOOK_SECRET
 ```
+
+The same value is automatically used while creating GitHub webhooks.
 
 ---
 
-## 9. Create a Slack Incoming Webhook
+# 11. Create a Slack Incoming Webhook
 
 Create a Slack App.
 
-Enable Incoming Webhooks.
+Enable:
+
+```
+Incoming Webhooks
+```
+
+Create a webhook for your desired channel.
 
 Copy the generated webhook URL.
 
-Paste it inside
-
-```
-SLACK_WEBHOOK_URL
-```
+When creating a rule in the application, choose the **Slack** action and paste this webhook URL into the action value field.
 
 ---
 
-## 10. Generate a Gemini API Key
+# 12. Generate a Gemini API Key
 
 Visit:
 
 https://aistudio.google.com/
 
-Create an API Key.
+Create a new API key.
 
-Add it to
+Store it as:
 
 ```
 GEMINI_API_KEY
@@ -311,7 +396,7 @@ GEMINI_API_KEY
 
 ---
 
-## 11. Start the Backend
+# 13. Start the Backend
 
 ```bash
 cd backend
@@ -319,9 +404,15 @@ cd backend
 npm run dev
 ```
 
+The backend starts on:
+
+```
+http://localhost:5000
+```
+
 ---
 
-## 12. Start the Frontend
+# 14. Start the Frontend
 
 ```bash
 cd frontend
@@ -329,95 +420,148 @@ cd frontend
 npm run dev
 ```
 
----
+Frontend:
 
-## 13. Expose Backend Using ngrok
-
-GitHub Webhooks require a public endpoint.
-
-```bash
-ngrok http 5000
+```
+http://localhost:3000
 ```
 
-Copy the generated HTTPS URL.
+---
 
-Update your backend base URL if required.
+# Using the Application
+
+## Step 1
+
+Open:
+
+```
+http://localhost:3000
+```
 
 ---
 
-## Using the Application
+## Step 2
 
-1. Login using GitHub.
-
-2. Connect one or more repositories.
-
-3. Configure automation rules.
-
-4. Open an Issue or Pull Request.
-
-5. Observe:
-
-- GitHub Label
-- GitHub Comment
-- Slack Notification
-- Dashboard Updates
+Login using GitHub.
 
 ---
 
-# Security
+## Step 3
 
-The project includes:
+Connect one or more repositories.
 
-- GitHub Webhook Signature Verification
-- Replay Attack Prevention
-- Duplicate Event Protection
-- Secure Session Authentication
-- Environment Variable Based Secret Management
-- Protected Backend Routes
-- Background Job Queue
-- Automatic Retry Mechanism
+The application automatically:
+
+- Stores repository information
+- Creates a GitHub webhook
+
+---
+
+## Step 4
+
+Create automation rules.
+
+Example:
+
+Trigger:
+
+```
+Issue Opened
+```
+
+Condition:
+
+```
+Title contains "bug"
+```
+
+Actions:
+
+- Add label
+- Comment
+- Send Slack notification
+
+---
+
+## Step 5
+
+Open an Issue or Pull Request in the connected repository.
+
+The application will automatically:
+
+- Receive the GitHub webhook
+- Verify its signature
+- Store the webhook job
+- Execute matching automation rules
+- Retry failures automatically
+- Update the dashboard
+
+---
+
+## Step 6
+
+Visit the Dashboard to monitor:
+
+- Connected repositories
+- Automation history
+- Successful actions
+- Failed actions
+- Retry history
+
+---
+
+# Security Features
+
+The application includes several production-oriented security measures:
+
+- GitHub webhook signature verification
+- Session-based authentication
+- Protected API routes
+- Replay attack prevention
+- Duplicate webhook protection
+- Idempotent action execution
+- Environment variable-based secret management
+- Automatic retry mechanism for failed jobs
 
 ---
 
 # Future Improvements
 
-Potential future enhancements include:
+Potential enhancements include:
 
-- GitHub App Authentication instead of OAuth App
-- AI-powered Issue/Pull Request summarization
-- AI-generated label suggestions
-- AI-based issue priority classification
-- Multiple Slack channels per repository
+- GitHub App authentication
+- AI-powered issue triage
+- AI-generated labels
+- Priority prediction
+- Nested AND/OR rule builder
+- Multiple Slack workspaces
 - Microsoft Teams integration
 - Discord integration
 - Email notifications
-- Scheduled automation workflows
-- Custom JavaScript automation actions
-- Advanced rule builder with nested AND/OR conditions
-- Organization repository support
-- WebSocket-based live dashboard updates
+- Scheduled workflows
+- Redis/BullMQ job queue
+- Exponential retry backoff
 - Docker support
-- Redis/BullMQ based distributed job queue
-- Retry backoff strategy
-- Monitoring with Prometheus and Grafana
-- CI/CD using GitHub Actions
-- Unit and Integration Tests
+- GitHub Actions CI/CD
+- Prometheus & Grafana monitoring
+- WebSocket-based live dashboard
+- Unit and integration tests
 
 ---
 
 # Deployment
 
-Frontend can be deployed on:
+## Frontend
 
 - Vercel
 
-Backend can be deployed on:
+## Backend
 
 - Render
 - Railway
 - Fly.io
 
-Database:
+## Database
 
 - Neon PostgreSQL
 
@@ -425,4 +569,4 @@ Database:
 
 # License
 
-This project is intended for educational and learning purposes.
+This project was developed for educational purposes and as a demonstration of building reliable GitHub automation workflows using modern web technologies.
