@@ -83,7 +83,7 @@ export default function RuleForm({
         };
 
         if (rule) {
-            await fetch(`${NEXT_PUBLIC_BACKEND_URL}/rules/${rule.id}`, {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/rules/${rule.id}`, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
@@ -94,7 +94,7 @@ export default function RuleForm({
             });
         } else {
             await fetch(
-                `${NEXT_PUBLIC_BACKEND_URL}/rules/${repositoryId}`,
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/rules/${repositoryId}`,
                 {
                     method: "POST",
                     credentials: "include",
