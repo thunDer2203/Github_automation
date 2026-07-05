@@ -85,31 +85,45 @@ export default function RepositoriesPage() {
                     {repos.map((repo) => (
                         <div
                             key={repo.id}
-                            className="bg-white rounded-xl border border-[#E4E4EA] p-5 flex items-center justify-between gap-4"
+                            className="rounded-xl p-5 flex items-center justify-between gap-4 transition-colors"
+                            style={{ backgroundColor: "#12141C", border: "1px solid #262B3A" }}
                         >
                             <div className="min-w-0">
                                 <div className="flex items-center gap-2.5 flex-wrap">
-                                    <h2 className="text-[15px] font-semibold text-[#1B1D29] truncate">
+                                    <h2
+                                        className="text-[15px] font-semibold truncate"
+                                        style={{ color: "#ECEDF3", fontFamily: "'Space Grotesk', sans-serif" }}
+                                    >
                                         {repo.name}
                                     </h2>
                                     <span
-                                        className={`shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium ${
+                                        className="shrink-0 px-2 py-0.5 rounded-full text-[11px] font-medium"
+                                        style={
                                             repo.private
-                                                ? "bg-[#FFF6E6] text-[#B4790A]"
-                                                : "bg-[#EEF0FF] text-[#5B5FEF]"
-                                        }`}
+                                                ? { backgroundColor: "rgba(227,168,87,0.12)", color: "#E3A857" }
+                                                : { backgroundColor: "rgba(124,111,224,0.14)", color: "#8B80EF" }
+                                        }
                                     >
                                         {repo.private ? "Private" : "Public"}
                                     </span>
                                 </div>
-                                <p className="text-[#6B6F80] text-[13px] font-['JetBrains_Mono'] mt-1 truncate">
+                                <p
+                                    className="text-[13px] mt-1 truncate"
+                                    style={{ color: "#6E7286", fontFamily: "'JetBrains Mono', monospace" }}
+                                >
                                     {repo.fullName}
                                 </p>
                             </div>
 
                             {isConnected(repo.id) ? (
-                                <span className="shrink-0 inline-flex items-center gap-1.5 text-[#1F9D6D] text-sm font-medium">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-[#1F9D6D]" />
+                                <span
+                                    className="shrink-0 inline-flex items-center gap-1.5 text-sm font-medium"
+                                    style={{ color: "#5FBF8F" }}
+                                >
+                                    <span
+                                        className="w-1.5 h-1.5 rounded-full"
+                                        style={{ backgroundColor: "#5FBF8F" }}
+                                    />
                                     Connected
                                 </span>
                             ) : (
@@ -124,7 +138,10 @@ export default function RepositoriesPage() {
                                             defaultBranch: repo.defaultBranch,
                                         })
                                     }
-                                    className="shrink-0 bg-[#14161F] cursor-pointer text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-[#1F2230] transition-colors"
+                                    className="shrink-0 cursor-pointer text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                                    style={{ backgroundColor: "#ECEDF3", color: "#0A0C12" }}
+                                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#D5D7E0")}
+                                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#ECEDF3")}
                                 >
                                     Connect
                                 </button>
@@ -133,7 +150,10 @@ export default function RepositoriesPage() {
                     ))}
 
                     {repos.length === 0 && (
-                        <div className="text-center py-20 text-[#6B6F80] bg-white rounded-xl border border-dashed border-[#E4E4EA]">
+                        <div
+                            className="text-center py-20 rounded-xl"
+                            style={{ color: "#6E7286", border: "1px dashed #262B3A" }}
+                        >
                             No GitHub repositories found for this account.
                         </div>
                     )}
@@ -146,10 +166,20 @@ export default function RepositoriesPage() {
 function RepoListSkeleton() {
     return (
         <div className="grid gap-3">
+            <style>{`
+                @keyframes skeletonPulse {
+                    0%, 100% { opacity: 0.5; }
+                    50% { opacity: 0.9; }
+                }
+                .skeleton-row {
+                    animation: skeletonPulse 1.6s ease-in-out infinite;
+                }
+            `}</style>
             {[...Array(4)].map((_, i) => (
                 <div
                     key={i}
-                    className="bg-white rounded-xl border border-[#E4E4EA] p-5 h-[76px] animate-pulse"
+                    className="skeleton-row rounded-xl h-[76px]"
+                    style={{ backgroundColor: "#12141C", border: "1px solid #1A1D28" }}
                 />
             ))}
         </div>

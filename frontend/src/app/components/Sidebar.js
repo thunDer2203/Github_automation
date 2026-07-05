@@ -95,7 +95,7 @@ export default function Sidebar() {
 
                 <button
                     onClick={logout}
-                    className="mt-4 w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors"
+                    className="mt-4 w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors cursor-pointer"
                     style={{ color: "#9497AB" }}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)";
