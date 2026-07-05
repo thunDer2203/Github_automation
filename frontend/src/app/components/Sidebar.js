@@ -26,11 +26,20 @@ export default function Sidebar() {
     }
 
     return (
-        <aside className="hidden md:flex w-60 flex-col justify-between bg-[#14161F] text-[#C7C9D9] shrink-0">
+        <aside
+            className="hidden md:flex w-60 flex-col justify-between shrink-0 sticky top-0 h-screen overflow-y-auto"
+            style={{ backgroundColor: "#12141C", color: "#9497AB" }}
+        >
             <div>
-                <div className="flex items-center gap-2.5 px-6 py-6 border-b border-white/5">
+                <div
+                    className="flex items-center gap-2.5 px-6 py-6"
+                    style={{ borderBottom: "1px solid #1A1D28" }}
+                >
                     <Logo />
-                    <span className="font-['Space_Grotesk'] text-[15px] font-medium text-white tracking-tight">
+                    <span
+                        className="text-[15px] font-medium tracking-tight"
+                        style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#ECEDF3" }}
+                    >
                         Automater
                     </span>
                 </div>
@@ -42,16 +51,32 @@ export default function Sidebar() {
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors"
+                                style={
                                     active
-                                        ? "bg-[#5B5FEF]/15 text-white"
-                                        : "text-[#9497AB] hover:bg-white/5 hover:text-white"
-                                }`}
+                                        ? { backgroundColor: "rgba(124,111,224,0.15)", color: "#ECEDF3" }
+                                        : { color: "#9497AB" }
+                                }
+                                onMouseEnter={(e) => {
+                                    if (!active) {
+                                        e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)";
+                                        e.currentTarget.style.color = "#ECEDF3";
+                                    }
+                                }}
+                                onMouseLeave={(e) => {
+                                    if (!active) {
+                                        e.currentTarget.style.backgroundColor = "transparent";
+                                        e.currentTarget.style.color = "#9497AB";
+                                    }
+                                }}
                             >
                                 <NavIcon name={item.icon} active={active} />
                                 {item.label}
                                 {active && (
-                                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#8B8EFB]" />
+                                    <span
+                                        className="ml-auto w-1.5 h-1.5 rounded-full"
+                                        style={{ backgroundColor: "#7C6FE0" }}
+                                    />
                                 )}
                             </Link>
                         );
@@ -59,15 +84,27 @@ export default function Sidebar() {
                 </nav>
             </div>
 
-            <div className="px-6 py-5 border-t border-white/5">
-                <p className="text-[11px] uppercase tracking-wider text-[#5F6274] font-medium">
+            <div className="px-6 py-5 shrink-0" style={{ borderTop: "1px solid #1A1D28" }}>
+                <p
+                    className="text-[11px] uppercase tracking-wider font-medium"
+                    style={{ color: "#4C5164" }}
+                >
                     Signed in via
                 </p>
-                <p className="text-sm text-[#C7C9D9] mt-1">GitHub</p>
+                <p className="text-sm mt-1" style={{ color: "#C7C9D9" }}>GitHub</p>
 
                 <button
                     onClick={logout}
-                    className="mt-4 w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-[#9497AB] hover:bg-white/5 hover:text-white transition-colors"
+                    className="mt-4 w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors"
+                    style={{ color: "#9497AB" }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.04)";
+                        e.currentTarget.style.color = "#ECEDF3";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#9497AB";
+                    }}
                 >
                     <LogoutIcon />
                     Log out
@@ -79,7 +116,10 @@ export default function Sidebar() {
 
 function Logo() {
     return (
-        <div className="w-7 h-7 rounded-md bg-[#5B5FEF] flex items-center justify-center shrink-0">
+        <div
+            className="w-7 h-7 rounded-md flex items-center justify-center shrink-0"
+            style={{ backgroundColor: "#7C6FE0" }}
+        >
             <svg viewBox="0 0 24 24" className="w-4 h-4 text-white" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" strokeLinejoin="round" strokeLinecap="round" />
             </svg>
@@ -106,7 +146,6 @@ function LogoutIcon() {
 }
 
 function NavIcon({ name, active }) {
-    const className = `w-4 h-4 shrink-0 ${active ? "text-[#8B8EFB]" : ""}`;
     const icons = {
         grid: (
             <>
@@ -134,7 +173,8 @@ function NavIcon({ name, active }) {
             strokeWidth="1.6"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className={className}
+            className="w-4 h-4 shrink-0"
+            style={{ color: active ? "#7C6FE0" : "currentColor" }}
         >
             {icons[name]}
         </svg>
