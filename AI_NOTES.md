@@ -56,6 +56,10 @@ GitHub can deliver the same webhook multiple times. To prevent duplicate actions
 
 This makes retries safe while avoiding duplicate labels, comments, and notifications.
 
+### 4. Security of webhook delivered
+
+- Implemented the security check to ensure that the webhook events coming from github is actually set up by my application.
+
 ---
 
 ## Hardest Bug / Wrong Turn
