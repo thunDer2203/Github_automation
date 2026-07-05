@@ -36,7 +36,8 @@ export function startJobWorker() {
 
                     await processWebhook(
                         job.trigger,
-                        job.payload
+                        job.payload,
+                        job.deliveryId
                     );
 
                     await prisma.processedWebhook.create({

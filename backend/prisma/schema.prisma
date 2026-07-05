@@ -184,3 +184,14 @@ enum JobStatus {
   SUCCESS
   FAILED
 }
+
+model ExecutedAction {
+  id         String @id @default(cuid())
+
+  deliveryId String
+  actionId   String
+
+  createdAt  DateTime @default(now())
+
+  @@unique([deliveryId, actionId])
+}
