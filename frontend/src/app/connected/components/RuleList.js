@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import RuleForm from "./RuleForm";
 
-const API = "http://localhost:5000";
 
 const TRIGGER_LABELS = {
     ISSUE_OPENED: "Issue opened",
@@ -24,7 +23,7 @@ export default function RuleList({ repositoryId }) {
 
     async function fetchRules() {
         const res = await fetch(
-            `${API}/rules/${repositoryId}`,
+            `${NEXT_PUBLIC_BACKEND_URL}/rules/${repositoryId}`,
             {
                 credentials: "include",
             }
@@ -36,7 +35,7 @@ export default function RuleList({ repositoryId }) {
     }
 
     async function deleteRule(id) {
-        await fetch(`${API}/rules/${id}`, {
+        await fetch(`${NEXT_PUBLIC_BACKEND_URL}/rules/${id}`, {
             method: "DELETE",
             credentials: "include",
         });

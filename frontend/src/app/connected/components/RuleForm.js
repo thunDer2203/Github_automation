@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const API = "http://localhost:5000";
+
 
 const inputClass =
     "w-full border border-[#E4E4EA] rounded-lg px-3.5 py-2.5 text-sm text-[#1B1D29] focus:outline-none focus:ring-2 focus:ring-[#5B5FEF]/30 focus:border-[#5B5FEF]";
@@ -83,7 +83,7 @@ export default function RuleForm({
         };
 
         if (rule) {
-            await fetch(`${API}/rules/${rule.id}`, {
+            await fetch(`${NEXT_PUBLIC_BACKEND_URL}/rules/${rule.id}`, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
@@ -94,7 +94,7 @@ export default function RuleForm({
             });
         } else {
             await fetch(
-                `${API}/rules/${repositoryId}`,
+                `${NEXT_PUBLIC_BACKEND_URL}/rules/${repositoryId}`,
                 {
                     method: "POST",
                     credentials: "include",

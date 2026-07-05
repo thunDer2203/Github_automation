@@ -2,7 +2,7 @@
 
 export default function Home() {
     const login = () => {
-        window.location.href = `${process.env.BACKEND_URL}/auth/github`;
+        window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/github`;
     };
 
     return (

@@ -14,7 +14,7 @@ export default function ConnectedRepositoriesPage() {
     }, []);
 
     async function fetchRepositories() {
-        const res = await fetch(`${process.env.BACKEND_URL}/repos`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/repos`, {
             credentials: "include",
         });
 
@@ -23,7 +23,7 @@ export default function ConnectedRepositoriesPage() {
     }
 
     async function disconnectRepository(id) {
-        const res = await fetch(`${process.env.BACKEND_URL}/repos/${id}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/repos/${id}`, {
             method: "DELETE",
             credentials: "include",
         });

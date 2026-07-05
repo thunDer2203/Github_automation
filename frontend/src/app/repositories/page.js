@@ -17,10 +17,10 @@ export default function RepositoriesPage() {
     async function loadData() {
         try {
             const [githubRes, connectedRes] = await Promise.all([
-                fetch(`${process.env.BACKEND_URL}/github/repos`, {
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/github/repos`, {
                     credentials: "include",
                 }),
-                fetch(`${process.env.BACKEND_URL}/repos`, {
+                fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/repos`, {
                     credentials: "include",
                 }),
             ]);
@@ -44,7 +44,7 @@ export default function RepositoriesPage() {
 
     async function connectRepository(repo) {
         try {
-            const res = await fetch(`${process.env.BACKEND_URL}/repos`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/repos`, {
                 method: "POST",
                 credentials: "include",
                 headers: {
