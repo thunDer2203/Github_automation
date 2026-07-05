@@ -21,6 +21,8 @@ enum DashboardEventType {
   LABEL_ADDED
   COMMENT_ADDED
   SLACK_SENT
+  ACTION_SUCCESS
+  ACTION_FAILED
 }
 
 enum TriggerEvent {
