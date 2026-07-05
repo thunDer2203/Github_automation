@@ -551,19 +551,19 @@ Potential enhancements include:
 
 # Deployment
 
-## Frontend
+The application is deployed using:
 
-- Vercel
+| Component | Platform |
+|-----------|----------|
+| Frontend | Vercel |
+| Backend | Render |
+| Database | Neon PostgreSQL |
 
-## Backend
+Frontend:
+https://github-automation-tan.vercel.app/
 
-- Render
-- Railway
-- Fly.io
-
-## Database
-
-- Neon PostgreSQL
+Backend API:
+https://github-automation-anrl.onrender.com
 
 ---
 
