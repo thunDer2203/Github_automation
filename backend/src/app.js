@@ -15,6 +15,8 @@ import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
+
+
 app.use(
     express.json({
         verify: (req, res, buf) => {
@@ -22,6 +24,10 @@ app.use(
         },
     })
 );
+
+app.set("trust proxy", 1);
+
+
 app.use(
     cors({
         origin: process.env.FRONTEND_URL,
@@ -34,7 +40,7 @@ app.use(
         secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        
+
         cookie: {
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
