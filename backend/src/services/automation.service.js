@@ -52,6 +52,7 @@
                     issueNumber: resource.number,
                     userId: user.id,
                     repositoryId: repository.id,
+                    payload,
                 });
             }
         }

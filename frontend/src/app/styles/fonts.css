@@ -1,0 +1,13 @@
+/*
+  Add this single line to the top of your existing app/globals.css
+  (above @tailwind directives, or right after them — either works).
+  No tailwind.config changes needed — components reference these
+  families directly via Tailwind arbitrary values, e.g. font-['Space_Grotesk'].
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Optional: make Inter the default body font */
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}

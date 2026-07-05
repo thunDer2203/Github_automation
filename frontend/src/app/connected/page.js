@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import RepositoryCard from "./components/RepositoryCard";
 import useAuth from "../hooks/useAuth";
+import AppShell from "../components/AppShell";
 
 export default function ConnectedRepositoriesPage() {
     useAuth();
@@ -33,24 +34,25 @@ export default function ConnectedRepositoriesPage() {
     }
 
     return (
-        <main className="min-h-screen bg-gray-100 p-10">
-            <h1 className="text-4xl font-bold mb-8">
-                Connected Repositories
-            </h1>
-
-            {repos.length === 0 && (
-                <h2>No repositories connected.</h2>
+        <AppShell
+            title="Connected"
+            description="Manage automation rules for each connected repository."
+        >
+            {repos.length === 0 ? (
+                <div className="text-center py-20 text-[#6B6F80] bg-white rounded-xl border border-dashed border-[#E4E4EA]">
+                    No repositories connected yet — head to Repositories to add one.
+                </div>
+            ) : (
+                <div className="space-y-5">
+                    {repos.map((repo) => (
+                        <RepositoryCard
+                            key={repo.id}
+                            repo={repo}
+                            onDisconnect={disconnectRepository}
+                        />
+                    ))}
+                </div>
             )}
-
-            <div className="space-y-6">
-                {repos.map((repo) => (
-                    <RepositoryCard
-                        key={repo.id}
-                        repo={repo}
-                        onDisconnect={disconnectRepository}
-                    />
-                ))}
-            </div>
-        </main>
+        </AppShell>
     );
 }

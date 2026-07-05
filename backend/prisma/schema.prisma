@@ -155,3 +155,32 @@ model RuleCondition {
 
   createdAt DateTime @default(now())
 }
+
+model ProcessedWebhook {
+  id          String   @id   // GitHub Delivery ID
+  createdAt   DateTime @default(now())
+}
+
+model WebhookJob {
+  id         String @id @default(cuid())
+
+  deliveryId String @unique
+
+  trigger    String
+  payload     Json
+
+  status      JobStatus @default(PENDING)
+
+  retries     Int @default(0)
+  error        String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+}

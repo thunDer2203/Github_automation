@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
+import AppShell from "../components/AppShell";
 
 const EVENT_TYPES = [
     "",
@@ -16,7 +17,7 @@ const EVENT_TYPES = [
 ];
 
 export default function DashboardPage() {
-  useAuth();
+    useAuth();
     const [stats, setStats] = useState(null);
     const [events, setEvents] = useState([]);
     const [repositories, setRepositories] = useState([]);
@@ -79,125 +80,69 @@ export default function DashboardPage() {
         setEvents(Array.isArray(data) ? data : []);
     }
 
+    const statCards = stats
+        ? [
+              { title: "Events", value: stats.totalEvents, icon: "activity" },
+              { title: "Repositories", value: stats.connectedRepositories, icon: "repo" },
+              { title: "Labels", value: stats.labelsAdded, icon: "tag" },
+              { title: "Comments", value: stats.commentsAdded, icon: "comment" },
+              { title: "Slack", value: stats.slackNotifications, icon: "slack" },
+          ]
+        : [];
+
     return (
-        <main className="min-h-screen bg-gray-100 p-10">
-            <h1 className="text-4xl font-bold mb-8">
-                Dashboard
-            </h1>
-
+        <AppShell
+            title="Dashboard"
+            description="A live feed of everything your automations have done."
+        >
             {stats && (
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-5 mb-10">
-                    <StatCard
-                        title="Events"
-                        value={stats.totalEvents}
-                    />
-
-                    <StatCard
-                        title="Repositories"
-                        value={stats.connectedRepositories}
-                    />
-
-                    <StatCard
-                        title="Labels"
-                        value={stats.labelsAdded}
-                    />
-
-                    <StatCard
-                        title="Comments"
-                        value={stats.commentsAdded}
-                    />
-
-                    <StatCard
-                        title="Slack"
-                        value={stats.slackNotifications}
-                    />
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                    {statCards.map((card) => (
+                        <StatCard key={card.title} {...card} />
+                    ))}
                 </div>
             )}
 
-            <div className="bg-white rounded-xl shadow p-5 mb-8 flex flex-wrap gap-4">
-
-                <select
-                    className="border rounded p-2"
+            <div className="bg-white rounded-xl border border-[#E4E4EA] p-4 mb-6 flex flex-wrap gap-3">
+                <Select
                     value={repositoryId}
-                    onChange={(e) =>
-                        setRepositoryId(e.target.value)
-                    }
-                >
-                    <option value="">
-                        All Repositories
-                    </option>
+                    onChange={setRepositoryId}
+                    defaultLabel="All repositories"
+                    options={repositories.map((repo) => ({
+                        value: repo.id,
+                        label: repo.fullName,
+                    }))}
+                />
 
-                    {repositories.map((repo) => (
-                        <option
-                            key={repo.id}
-                            value={repo.id}
-                        >
-                            {repo.fullName}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    className="border rounded p-2"
+                <Select
                     value={type}
-                    onChange={(e) =>
-                        setType(e.target.value)
-                    }
-                >
-                    <option value="">
-                        All Events
-                    </option>
+                    onChange={setType}
+                    defaultLabel="All events"
+                    options={EVENT_TYPES.slice(1).map((event) => ({
+                        value: event,
+                        label: event.replaceAll("_", " "),
+                    }))}
+                />
 
-                    {EVENT_TYPES.slice(1).map((event) => (
-                        <option
-                            key={event}
-                            value={event}
-                        >
-                            {event.replaceAll("_", " ")}
-                        </option>
-                    ))}
-                </select>
-
-                <select
-                    className="border rounded p-2"
+                <Select
                     value={success}
-                    onChange={(e) =>
-                        setSuccess(e.target.value)
-                    }
-                >
-                    <option value="">
-                        All Status
-                    </option>
-
-                    <option value="true">
-                        Success
-                    </option>
-
-                    <option value="false">
-                        Failed
-                    </option>
-                </select>
+                    onChange={setSuccess}
+                    defaultLabel="All status"
+                    options={[
+                        { value: "true", label: "Success" },
+                        { value: "false", label: "Failed" },
+                    ]}
+                />
             </div>
 
-            <div className="bg-white rounded-xl shadow overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-200">
-                        <tr>
-                            <th className="text-left p-4">
-                                Event
-                            </th>
-
-                            <th className="text-left p-4">
-                                Repository
-                            </th>
-
-                            <th className="text-left p-4">
-                                Status
-                            </th>
-
-                            <th className="text-left p-4">
-                                Time
-                            </th>
+            <div className="bg-white rounded-xl border border-[#E4E4EA] overflow-hidden overflow-x-auto">
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="border-b border-[#E4E4EA] text-left text-[#6B6F80]">
+                            <th className="px-5 py-3 font-medium whitespace-nowrap">Event</th>
+                            <th className="px-5 py-3 font-medium whitespace-nowrap">Repository</th>
+                            <th className="px-5 py-3 font-medium whitespace-nowrap">Status</th>
+                            <th className="px-5 py-3 font-medium whitespace-nowrap">Time</th>
                         </tr>
                     </thead>
 
@@ -205,73 +150,107 @@ export default function DashboardPage() {
                         {events.map((event) => (
                             <tr
                                 key={event.id}
-                                className="border-t"
+                                className="border-b border-[#EDEDF1] last:border-0 hover:bg-[#FAFAFB] transition-colors"
                             >
-                                <td className="p-4">
-                                    <div className="font-semibold">
-                                        {event.title}
-                                    </div>
-
-                                    <div className="text-gray-500 text-sm">
+                                <td className="px-5 py-4">
+                                    <div className="font-medium text-[#1B1D29]">{event.title}</div>
+                                    <div className="text-[#6B6F80] text-[13px] mt-0.5">
                                         {event.description}
                                     </div>
                                 </td>
 
-                                <td className="p-4">
-                                    {event.repository
-                                        ?.fullName ??
-                                        "-"}
+                                <td className="px-5 py-4 font-['JetBrains_Mono'] text-[13px] text-[#4B4E5E] whitespace-nowrap">
+                                    {event.repository?.fullName ?? "—"}
                                 </td>
 
-                                <td className="p-4">
+                                <td className="px-5 py-4 whitespace-nowrap">
                                     <span
-                                        className={`px-3 py-1 rounded-full text-sm ${
+                                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
                                             event.success
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-red-100 text-red-700"
+                                                ? "bg-[#E8F7EF] text-[#1F9D6D]"
+                                                : "bg-[#FDEBEC] text-[#E5484D]"
                                         }`}
                                     >
-                                        {event.success
-                                            ? "Success"
-                                            : "Failed"}
+                                        <span
+                                            className={`w-1.5 h-1.5 rounded-full ${
+                                                event.success ? "bg-[#1F9D6D]" : "bg-[#E5484D]"
+                                            }`}
+                                        />
+                                        {event.success ? "Success" : "Failed"}
                                     </span>
                                 </td>
 
-                                <td className="p-4">
-                                    {new Date(
-                                        event.createdAt
-                                    ).toLocaleString()}
+                                <td className="px-5 py-4 text-[#6B6F80] whitespace-nowrap">
+                                    {new Date(event.createdAt).toLocaleString()}
                                 </td>
                             </tr>
                         ))}
 
                         {events.length === 0 && (
                             <tr>
-                                <td
-                                    colSpan={4}
-                                    className="text-center p-10 text-gray-500"
-                                >
-                                    No events found.
+                                <td colSpan={4} className="text-center px-5 py-16 text-[#6B6F80]">
+                                    No events match these filters yet.
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
-        </main>
+        </AppShell>
     );
 }
 
-function StatCard({ title, value }) {
+function StatCard({ title, value, icon }) {
     return (
-        <div className="bg-white rounded-xl shadow p-6">
-            <p className="text-gray-500">
-                {title}
-            </p>
-
-            <h2 className="text-3xl font-bold mt-2">
-                {value}
+        <div className="bg-white rounded-xl border border-[#E4E4EA] p-5">
+            <div className="flex items-center justify-between mb-3">
+                <p className="text-[#6B6F80] text-[13px]">{title}</p>
+                <StatIcon name={icon} />
+            </div>
+            <h2 className="font-['Space_Grotesk'] text-[28px] font-semibold text-[#1B1D29] leading-none">
+                {value ?? 0}
             </h2>
         </div>
+    );
+}
+
+function StatIcon({ name }) {
+    const icons = {
+        activity: <path d="M3 12h4l3 8 4-16 3 8h4" />,
+        repo: <path d="M4 4h13a2 2 0 0 1 2 2v14l-8.5-4L4 20V4Z" />,
+        tag: <path d="M3 11.5 11.5 3H19a2 2 0 0 1 2 2v7.5L12.5 21 3 11.5Z" />,
+        comment: <path d="M4 4h16v12H8l-4 4V4Z" />,
+        slack: <path d="M9 3v9M15 3v6M6 12h6m3 3H9m9-3v9" />,
+    };
+
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-4 h-4 text-[#8B8EFB]"
+        >
+            {icons[name]}
+        </svg>
+    );
+}
+
+function Select({ value, onChange, defaultLabel, options }) {
+    return (
+        <select
+            className="border border-[#E4E4EA] rounded-lg px-3 py-2 text-sm text-[#1B1D29] bg-white focus:outline-none focus:ring-2 focus:ring-[#5B5FEF]/30 focus:border-[#5B5FEF]"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+        >
+            <option value="">{defaultLabel}</option>
+            {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                </option>
+            ))}
+        </select>
     );
 }

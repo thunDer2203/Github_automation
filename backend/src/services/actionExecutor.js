@@ -1,6 +1,7 @@
 import { createIssueLabel,createIssueComment } from "./github.services.js";
 import { sendSlackMessage } from "./slack.services.js";
 import { addDashboardEvent } from "./dashboard.services.js";
+import { generateSlackMessage } from "./ai.service.js";
 
 export async function executeAction({
     action,
@@ -10,6 +11,7 @@ export async function executeAction({
     issueNumber,
     userId,
     repositoryId,
+    payload
 }) {
     switch (action.type) {
         case "ADD_LABEL":
@@ -46,10 +48,11 @@ export async function executeAction({
 });
             break;
             case "SLACK":
-
+    const aiMessage = await generateSlackMessage(payload);
+    // console.log("Generated AI message:", aiMessage);
     await sendSlackMessage({
         webhookUrl: action.value,
-        message: `New issue opened in ${owner}/${repo}\nIssue: #${issueNumber}`,
+        message: aiMessage,
     });
     await addDashboardEvent({
     userId,
