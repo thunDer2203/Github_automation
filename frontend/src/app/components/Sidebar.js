@@ -14,8 +14,8 @@ export default function Sidebar() {
 
     async function logout() {
         try {
-            await fetch("http://localhost:5000/auth/logout", {
-                method: "POST",
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
+                method: "GET",
                 credentials: "include",
             });
         } catch (err) {

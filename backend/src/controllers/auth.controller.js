@@ -21,9 +21,32 @@ export const me = (req, res) => {
 };
 
 export const logout = (req, res) => {
-    req.logout(() => {
-        res.json({
-            message: "Logged out",
+    req.logout((err) => {
+        if (err) {
+            return res.status(500).json({
+                message: "Logout failed",
+            });
+        }
+
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({
+                    message: "Failed to destroy session",
+                });
+            }
+
+            res.clearCookie("connect.sid", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite:
+                    process.env.NODE_ENV === "production"
+                        ? "none"
+                        : "lax",
+            });
+
+            res.json({
+                message: "Logged out successfully",
+            });
         });
     });
 };
