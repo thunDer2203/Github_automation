@@ -8,12 +8,17 @@ const EVENT_TYPES = [
     "",
     "REPOSITORY_CONNECTED",
     "REPOSITORY_DISCONNECTED",
+    "JOB_SUCCESS",
+    "JOB_RETRY",
+    "JOB_FAILED",
     "RULE_CREATED",
     "RULE_UPDATED",
     "RULE_DELETED",
     "LABEL_ADDED",
     "COMMENT_ADDED",
     "SLACK_SENT",
+    "ACTION_SUCCESS",
+    "ACTION_FAILED",
 ];
 
 export default function DashboardPage() {
@@ -95,6 +100,31 @@ export default function DashboardPage() {
             title="Dashboard"
             description="A live feed of everything your automations have done."
         >
+            <style>{`
+                .dash-select {
+                    background-color: #12141C;
+                    border: 1px solid #262B3A;
+                    color: #ECEDF3;
+                }
+                .dash-select:focus {
+                    outline: none;
+                    border-color: #7C6FE0;
+                    box-shadow: 0 0 0 2px rgba(124,111,224,0.25);
+                }
+                .dash-select option {
+                    background-color: #12141C;
+                    color: #ECEDF3;
+                }
+                .dash-row:hover {
+                    background-color: rgba(255,255,255,0.025);
+                }
+                .truncate-cell {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+            `}</style>
+
             {stats && (
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
                     {statCards.map((card) => (
@@ -103,7 +133,10 @@ export default function DashboardPage() {
                 </div>
             )}
 
-            <div className="bg-white rounded-xl border border-[#E4E4EA] p-4 mb-6 flex flex-wrap gap-3">
+            <div
+                className="rounded-xl p-4 mb-6 flex flex-wrap gap-3"
+                style={{ backgroundColor: "#12141C", border: "1px solid #262B3A" }}
+            >
                 <Select
                     value={repositoryId}
                     onChange={setRepositoryId}
@@ -135,14 +168,43 @@ export default function DashboardPage() {
                 />
             </div>
 
-            <div className="bg-white rounded-xl border border-[#E4E4EA] overflow-hidden overflow-x-auto">
+            <div
+                className="rounded-xl overflow-hidden overflow-x-auto"
+                style={{ backgroundColor: "#12141C", border: "1px solid #262B3A" }}
+            >
                 <table className="w-full text-sm">
+                    <colgroup>
+                        <col className="w-[38%]" />
+                        <col className="w-[22%]" />
+                        <col className="w-[18%]" />
+                        <col className="w-[22%]" />
+                    </colgroup>
                     <thead>
-                        <tr className="border-b border-[#E4E4EA] text-left text-[#6B6F80]">
-                            <th className="px-5 py-3 font-medium whitespace-nowrap">Event</th>
-                            <th className="px-5 py-3 font-medium whitespace-nowrap">Repository</th>
-                            <th className="px-5 py-3 font-medium whitespace-nowrap">Status</th>
-                            <th className="px-5 py-3 font-medium whitespace-nowrap">Time</th>
+                        <tr style={{ borderBottom: "1px solid #262B3A" }} className="text-left">
+                            <th
+                                className="px-5 py-3 font-medium whitespace-nowrap"
+                                style={{ color: "#6E7286", fontFamily: "'Inter', sans-serif" }}
+                            >
+                                Event
+                            </th>
+                            <th
+                                className="px-5 py-3 font-medium whitespace-nowrap"
+                                style={{ color: "#6E7286", fontFamily: "'Inter', sans-serif" }}
+                            >
+                                Repository
+                            </th>
+                            <th
+                                className="px-5 py-3 font-medium whitespace-nowrap"
+                                style={{ color: "#6E7286", fontFamily: "'Inter', sans-serif" }}
+                            >
+                                Status
+                            </th>
+                            <th
+                                className="px-5 py-3 font-medium whitespace-nowrap"
+                                style={{ color: "#6E7286", fontFamily: "'Inter', sans-serif" }}
+                            >
+                                Time
+                            </th>
                         </tr>
                     </thead>
 
@@ -150,37 +212,58 @@ export default function DashboardPage() {
                         {events.map((event) => (
                             <tr
                                 key={event.id}
-                                className="border-b border-[#EDEDF1] last:border-0 hover:bg-[#FAFAFB] transition-colors"
+                                className="dash-row transition-colors"
+                                style={{ borderBottom: "1px solid #1A1D28" }}
                             >
-                                <td className="px-5 py-4">
-                                    <div className="font-medium text-[#1B1D29]">{event.title}</div>
-                                    <div className="text-[#6B6F80] text-[13px] mt-0.5">
+                                <td className="px-5 py-4 max-w-0">
+                                    <div
+                                        className="truncate-cell font-medium"
+                                        style={{ color: "#ECEDF3", fontFamily: "'Inter', sans-serif" }}
+                                        title={event.title}
+                                    >
+                                        {event.title}
+                                    </div>
+                                    <div
+                                        className="truncate-cell text-[13px] mt-0.5"
+                                        style={{ color: "#6E7286", fontFamily: "'Inter', sans-serif" }}
+                                        title={event.description}
+                                    >
                                         {event.description}
                                     </div>
                                 </td>
 
-                                <td className="px-5 py-4 font-['JetBrains_Mono'] text-[13px] text-[#4B4E5E] whitespace-nowrap">
-                                    {event.repository?.fullName ?? "—"}
+                                <td className="px-5 py-4 max-w-0">
+                                    <div
+                                        className="truncate-cell text-[13px]"
+                                        style={{ color: "#9497AB", fontFamily: "'JetBrains Mono', monospace" }}
+                                        title={event.repository?.fullName ?? "—"}
+                                    >
+                                        {event.repository?.fullName ?? "—"}
+                                    </div>
                                 </td>
 
                                 <td className="px-5 py-4 whitespace-nowrap">
                                     <span
-                                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                                            event.success
-                                                ? "bg-[#E8F7EF] text-[#1F9D6D]"
-                                                : "bg-[#FDEBEC] text-[#E5484D]"
-                                        }`}
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                                        style={{
+                                            backgroundColor: event.success
+                                                ? "rgba(95,191,143,0.12)"
+                                                : "rgba(224,97,107,0.12)",
+                                            color: event.success ? "#5FBF8F" : "#E0616B",
+                                        }}
                                     >
                                         <span
-                                            className={`w-1.5 h-1.5 rounded-full ${
-                                                event.success ? "bg-[#1F9D6D]" : "bg-[#E5484D]"
-                                            }`}
+                                            className="w-1.5 h-1.5 rounded-full"
+                                            style={{ backgroundColor: event.success ? "#5FBF8F" : "#E0616B" }}
                                         />
                                         {event.success ? "Success" : "Failed"}
                                     </span>
                                 </td>
 
-                                <td className="px-5 py-4 text-[#6B6F80] whitespace-nowrap">
+                                <td
+                                    className="px-5 py-4 whitespace-nowrap text-[13px]"
+                                    style={{ color: "#6E7286", fontFamily: "'JetBrains Mono', monospace" }}
+                                >
                                     {new Date(event.createdAt).toLocaleString()}
                                 </td>
                             </tr>
@@ -188,7 +271,11 @@ export default function DashboardPage() {
 
                         {events.length === 0 && (
                             <tr>
-                                <td colSpan={4} className="text-center px-5 py-16 text-[#6B6F80]">
+                                <td
+                                    colSpan={4}
+                                    className="text-center px-5 py-16"
+                                    style={{ color: "#6E7286", fontFamily: "'Inter', sans-serif" }}
+                                >
                                     No events match these filters yet.
                                 </td>
                             </tr>
@@ -202,12 +289,17 @@ export default function DashboardPage() {
 
 function StatCard({ title, value, icon }) {
     return (
-        <div className="bg-white rounded-xl border border-[#E4E4EA] p-5">
+        <div className="rounded-xl p-5" style={{ backgroundColor: "#12141C", border: "1px solid #262B3A" }}>
             <div className="flex items-center justify-between mb-3">
-                <p className="text-[#6B6F80] text-[13px]">{title}</p>
+                <p className="text-[13px]" style={{ color: "#6E7286", fontFamily: "'Inter', sans-serif" }}>
+                    {title}
+                </p>
                 <StatIcon name={icon} />
             </div>
-            <h2 className="font-['Space_Grotesk'] text-[28px] font-semibold text-[#1B1D29] leading-none">
+            <h2
+                className="text-[28px] font-semibold leading-none"
+                style={{ fontFamily: "'Space Grotesk', sans-serif", color: "#ECEDF3" }}
+            >
                 {value ?? 0}
             </h2>
         </div>
@@ -227,11 +319,11 @@ function StatIcon({ name }) {
         <svg
             viewBox="0 0 24 24"
             fill="none"
-            stroke="currentColor"
+            stroke="#7C6FE0"
             strokeWidth="1.6"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="w-4 h-4 text-[#8B8EFB]"
+            className="w-4 h-4"
         >
             {icons[name]}
         </svg>
@@ -241,7 +333,7 @@ function StatIcon({ name }) {
 function Select({ value, onChange, defaultLabel, options }) {
     return (
         <select
-            className="border border-[#E4E4EA] rounded-lg px-3 py-2 text-sm text-[#1B1D29] bg-white focus:outline-none focus:ring-2 focus:ring-[#5B5FEF]/30 focus:border-[#5B5FEF]"
+            className="dash-select rounded-lg px-3 py-2 text-sm"
             value={value}
             onChange={(e) => onChange(e.target.value)}
         >
