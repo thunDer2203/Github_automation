@@ -567,6 +567,42 @@ https://github-automation-anrl.onrender.com
 
 ---
 
+# Testing
+
+To test the application:
+
+1. Sign in using your own GitHub account.
+
+2. Connect any GitHub repository that you own or have admin access to.
+
+3. Create a rule.
+
+Example:
+
+Trigger:
+- Issue Opened
+
+Condition:
+- Title contains "bug"
+
+Actions:
+- Add Label "bug"
+- Comment "Thanks for reporting!"
+- Slack Notification (optional)
+
+4. Open a new GitHub Issue with the title:
+
+bug: testing automation
+
+5. Within a few seconds you should observe:
+
+- Label added to the issue
+- Comment posted
+- Slack notification (if configured)
+- Dashboard updated
+
+---
+
 # License
 
 This project was developed for educational purposes and as a demonstration of building reliable GitHub automation workflows using modern web technologies.
