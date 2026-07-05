@@ -12,13 +12,26 @@ const NAV_ITEMS = [
 export default function Sidebar() {
     const pathname = usePathname();
 
+    async function logout() {
+        try {
+            await fetch("http://localhost:5000/auth/logout", {
+                method: "POST",
+                credentials: "include",
+            });
+        } catch (err) {
+            console.error(err);
+        } finally {
+            window.location.href = "/";
+        }
+    }
+
     return (
         <aside className="hidden md:flex w-60 flex-col justify-between bg-[#14161F] text-[#C7C9D9] shrink-0">
             <div>
                 <div className="flex items-center gap-2.5 px-6 py-6 border-b border-white/5">
                     <Logo />
                     <span className="font-['Space_Grotesk'] text-[15px] font-medium text-white tracking-tight">
-                        GitHub Automation
+                        Hookline
                     </span>
                 </div>
 
@@ -51,6 +64,14 @@ export default function Sidebar() {
                     Signed in via
                 </p>
                 <p className="text-sm text-[#C7C9D9] mt-1">GitHub</p>
+
+                <button
+                    onClick={logout}
+                    className="mt-4 w-full flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-[#9497AB] hover:bg-white/5 hover:text-white transition-colors"
+                >
+                    <LogoutIcon />
+                    Log out
+                </button>
             </div>
         </aside>
     );
@@ -63,6 +84,24 @@ function Logo() {
                 <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" strokeLinejoin="round" strokeLinecap="round" />
             </svg>
         </div>
+    );
+}
+
+function LogoutIcon() {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-4 h-4 shrink-0"
+        >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <path d="M16 17l5-5-5-5" />
+            <path d="M21 12H9" />
+        </svg>
     );
 }
 

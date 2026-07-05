@@ -12,8 +12,21 @@ const NAV_ITEMS = [
 export default function MobileNav() {
     const pathname = usePathname();
 
+    async function logout() {
+        try {
+            await fetch("http://localhost:5000/auth/logout", {
+                method: "POST",
+                credentials: "include",
+            });
+        } catch (err) {
+            console.error(err);
+        } finally {
+            window.location.href = "/";
+        }
+    }
+
     return (
-        <nav className="md:hidden sticky bottom-0 z-10 bg-white border-t border-[#E4E4EA] flex justify-around px-2 py-2">
+        <nav className="md:hidden sticky bottom-0 z-10 bg-white border-t border-[#E4E4EA] flex items-center justify-around px-2 py-2">
             {NAV_ITEMS.map((item) => {
                 const active = pathname === item.href;
                 return (
@@ -30,6 +43,13 @@ export default function MobileNav() {
                     </Link>
                 );
             })}
+
+            <button
+                onClick={logout}
+                className="text-xs font-medium px-3 py-2 rounded-lg text-[#E5484D]"
+            >
+                Log out
+            </button>
         </nav>
     );
 }
