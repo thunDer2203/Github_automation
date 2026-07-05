@@ -31,7 +31,7 @@ export default function Sidebar() {
                 <div className="flex items-center gap-2.5 px-6 py-6 border-b border-white/5">
                     <Logo />
                     <span className="font-['Space_Grotesk'] text-[15px] font-medium text-white tracking-tight">
-                        Hookline
+                        Automater
                     </span>
                 </div>
 
