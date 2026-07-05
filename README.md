@@ -12,7 +12,7 @@ Frontend:
 https://github-automation-tan.vercel.app/
 
 Backend:
-https://github-automation-anrl.onrender.com
+https://github-automation-anrl.onrender.com(As Render is on free trial please wait for a minute after the first backend request as render may take a while to load. Thanks for your patience)
 
 # Features
 
