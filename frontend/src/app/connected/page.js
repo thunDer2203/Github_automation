@@ -39,7 +39,10 @@ export default function ConnectedRepositoriesPage() {
             description="Manage automation rules for each connected repository."
         >
             {repos.length === 0 ? (
-                <div className="text-center py-20 text-[#6B6F80] bg-white rounded-xl border border-dashed border-[#E4E4EA]">
+                <div
+                    className="text-center py-20 rounded-xl"
+                    style={{ color: "#6E7286", border: "1px dashed #262B3A" }}
+                >
                     No repositories connected yet — head to Repositories to add one.
                 </div>
             ) : (
