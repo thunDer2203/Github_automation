@@ -46,7 +46,7 @@ export default function MobileNav() {
 
             <button
                 onClick={logout}
-                className="text-xs font-medium px-3 py-2 rounded-lg text-[#E5484D]"
+                className="text-xs font-medium px-3 py-2 rounded-lg text-[#E5484D] cursor-pointer"
             >
                 Log out
             </button>
