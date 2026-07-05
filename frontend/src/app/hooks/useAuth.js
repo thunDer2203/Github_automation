@@ -9,7 +9,7 @@ export default function useAuth() {
 
     useEffect(() => {
         async function checkAuth() {
-            const res = await fetch(`${NEXT_PUBLIC_BACKEND_URL}/auth/me`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`, {
                 credentials: "include",
             });
 
