@@ -17,7 +17,7 @@ export const me = (req, res) => {
         });
     }
 
-    res.json(req.user);
+    res.json(req.user.id);
 };
 
 export const logout = (req, res) => {
